@@ -1,0 +1,28 @@
+<script type="module">
+import { supabase, rp, esc } from "./js/supabase-config.js";
+
+const q = new URLSearchParams(location.search);
+const item = (q.get("item") || "").slice(0, 100);
+const price = Math.max(0, parseInt(q.get("price")) || 0);
+const $ = id => document.getElementById(id);
+$("ringkas").innerHTML = "<b>" + esc(item || "Layanan") + "</b><br>Estimasi: " + (price ? rp(price) : "dikonfirmasi admin");
+
+const { data } = await supabase.auth.getSession();
+const user = data.session?.user;
+if (!user) location.href = "login.html?next=" + encodeURIComponent(location.pathname.split("/").pop() + location.search);
+
+$("kirim").onclick = async () => {
+  if (!$("nick").value.trim() || !$("gid").value.trim()) { $("msg").textContent = "Nickname dan ID wajib diisi."; return; }
+  $("kirim").disabled = true;
+  const { error } = await supabase.from("orders").insert({
+    item, price,
+    nick: $("nick").value.trim(),
+    game_id: $("gid").value.trim(),
+    via: $("via").value,
+    bayar: $("bayar").value,
+    note: $("note").value.trim()
+  });
+  if (error) { $("msg").textContent = "Gagal: " + error.message; $("kirim").disabled = false; return; }
+  location.href = "pesanan.html";
+};
+</script>
