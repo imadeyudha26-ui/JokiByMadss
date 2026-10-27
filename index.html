@@ -1257,6 +1257,38 @@
       return target.pathname + target.search;
     }
 
+    function signupOptions() {
+      const hostname = location.hostname.toLowerCase();
+      const isLocalhost = hostname === "localhost" ||
+        hostname === "127.0.0.1" ||
+        hostname === "[::1]" ||
+        hostname.endsWith(".localhost");
+
+      if (isLocalhost) return {};
+
+      const emailRedirectTo = new URL("/index.html", location.origin);
+      emailRedirectTo.searchParams.set("page", "login");
+      emailRedirectTo.searchParams.set("verified", "1");
+      return { emailRedirectTo: emailRedirectTo.href };
+    }
+
+    function readAuthCallback() {
+      const callback = {
+        verified: params.get("verified") === "1",
+        error: params.get("error_description") || params.get("error") || ""
+      };
+
+      if (callback.verified || callback.error) {
+        const cleanUrl = new URL(location.href);
+        ["verified", "error", "error_code", "error_description"].forEach(key => {
+          cleanUrl.searchParams.delete(key);
+        });
+        history.replaceState(history.state, "", cleanUrl.pathname + cleanUrl.search + cleanUrl.hash);
+      }
+
+      return callback;
+    }
+
     function escapeHtml(value) {
       return String(value ?? "").replace(/[&<>"']/g, character => ({
         "&": "&amp;",
@@ -1321,7 +1353,7 @@
       return true;
     }
 
-    async function initializeLoginPage(supabase, session) {
+    async function initializeLoginPage(supabase, session, authCallback) {
       let daftar = false;
       const form = document.getElementById("loginForm");
       const button = document.getElementById("go");
@@ -1346,29 +1378,36 @@
           email: document.getElementById("email").value.trim(),
           password: password.value
         };
-        const { error } = daftar
-          ? await supabase.auth.signUp(credentials)
-          : await supabase.auth.signInWithPassword(credentials);
-
-        if (error) {
-          setMessage("loginMsg", "Gagal: " + error.message);
-          button.disabled = false;
-          return;
-        }
-
         try {
+          const { error } = daftar
+            ? await supabase.auth.signUp({
+              ...credentials,
+              options: signupOptions()
+            })
+            : await supabase.auth.signInWithPassword(credentials);
+
+          if (error) {
+            setMessage("loginMsg", "Gagal: " + error.message);
+            button.disabled = false;
+            return;
+          }
+
           const redirected = await continueAfterLogin(supabase);
           if (!redirected) {
-            setMessage("loginMsg", "Cek email kamu untuk konfirmasi, lalu masuk.");
+            setMessage("loginMsg", daftar
+              ? "Akun dibuat. Cek email kamu untuk konfirmasi, lalu masuk."
+              : "Tidak ada sesi aktif. Silakan masuk kembali.");
             button.disabled = false;
           }
-        } catch (sessionError) {
-          setMessage("loginMsg", "Gagal memeriksa sesi: " + sessionError.message);
+        } catch (error) {
+          setMessage("loginMsg", "Gagal: " + error.message);
           button.disabled = false;
         }
       };
 
       if (session?.user) await continueAfterLogin(supabase);
+      else if (authCallback.error) setMessage("loginMsg", "Verifikasi gagal: " + authCallback.error);
+      else if (authCallback.verified) setMessage("loginMsg", "Email berhasil diverifikasi. Silakan masuk.");
     }
 
     function initializeSignOut(supabase) {
@@ -1549,7 +1588,7 @@
         const session = await getSession(supabase);
 
         if (page === "login") {
-          await initializeLoginPage(supabase, session);
+          await initializeLoginPage(supabase, session, readAuthCallback());
         } else {
           await initializeAuthenticatedPage(supabase, session);
         }
