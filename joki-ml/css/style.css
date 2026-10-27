@@ -1260,14 +1260,14 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
    21. TESTIMONIALS
    ------------------------------------------------------------ */
 .testimonials { padding-block: clamp(4rem,8vw,6rem); background: var(--clr-bg-2); overflow: hidden; }
-.testimonials__wrapper { position: relative; }
+.testimonials__wrapper { position: relative; overflow: hidden; }
 .testimonials__track {
-  display: flex; gap: 1.5rem; overflow: hidden;
+  display: flex; gap: 1.5rem; overflow: visible;
   cursor: grab;
 }
 .testimonials__track:active { cursor: grabbing; }
 .testi-card {
-  min-width: calc(33.333% - 1rem); flex-shrink: 0;
+  flex: 0 0 calc(33.333% - 1rem);
   padding: 2rem; border-radius: 16px;
   display: flex; flex-direction: column; gap: 1rem;
   transition: border-color 0.3s, transform 0.3s;
@@ -1507,7 +1507,7 @@ a.footer__contact-item:hover { color: var(--clr-gold); }
   .benefits__grid  { grid-template-columns: repeat(2,1fr); }
   .footer__inner   { grid-template-columns: 1fr 1fr; }
   .footer__brand   { grid-column: 1 / -1; }
-  .testi-card      { min-width: calc(50% - 0.75rem); }
+  .testi-card      { flex-basis: calc(50% - 0.75rem); }
   .calc-result__content { grid-template-columns: 1fr; gap: 0.5rem; }
   .calc-result__divider { display: none; }
 }
@@ -1555,7 +1555,7 @@ a.footer__contact-item:hover { color: var(--clr-gold); }
   }
 
   /* Testimonials */
-  .testi-card { min-width: 100%; }
+  .testi-card { flex-basis: 100%; }
 
   /* Footer */
   .footer__inner { grid-template-columns: 1fr; gap: 2rem; }
