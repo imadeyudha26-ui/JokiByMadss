@@ -21,11 +21,18 @@ If the Python launcher is unavailable, use `python -m http.server 4173`. Open `h
 
 The browser loads Supabase JS from its CDN. The project URL and publishable key are configured in the account script in `index.html`; the publishable key is not a service-role secret. Configure Supabase Row Level Security policies to protect customer orders and admin operations. Frontend email checks are not a security boundary.
 
-Before enabling member profiles and order administration, inspect the deployed `public.orders` schema and policies, then review and apply `supabase/migrations/20261028000000_secure_member_orders.sql` in the Supabase SQL editor. The migration expects the existing `orders` table and the fields used by the app (`user_id`, `email`, `status`, `created_at`, `item`, `price`, `nick`, `game_id`, `via`, `bayar`, and `note`). It creates the profile and role tables, assigns the existing `imadeyudha26@gmail.com` Auth user the admin role, and adds restrictive RLS policies without deleting existing policies. If that account does not already exist, create/verify it through the normal Auth process before applying the migration; the migration does not create an account or change its password. Enable the `orders` table in the `supabase_realtime` publication if live order updates are desired.
+Before enabling member profiles, QRIS payments, or order administration, inspect the deployed `public.orders` schema and policies. In Supabase SQL Editor, review and apply these migrations in order:
+
+1. `supabase/migrations/20261028000000_secure_member_orders.sql`
+2. `supabase/migrations/20261028010000_order_payments_profiles.sql`
+
+The first migration expects the existing `orders` table and fields used by the app (`user_id`, `email`, `status`, `created_at`, `item`, `price`, `nick`, `game_id`, `via`, `bayar`, and `note`). It creates the profile and role tables and assigns the existing `imadeyudha26@gmail.com` Auth user the admin role. The second migration adds separate payment status and proof references, a private `jbm-payment-proofs` Storage bucket, owner/admin policies, and adds `orders` to `supabase_realtime` when that publication exists. Both migrations preserve existing order rows; legacy rows are labeled `Perlu Ditinjau` rather than assumed paid or unpaid based on their old mixed `status` field. Admins must review historical payment records manually. If the admin account does not already exist, create/verify it through the normal Auth process before applying the first migration; the migration does not create an account or change its password.
+
+Add your real static QRIS image at `joki-ml/assets/qris.png` and set the single `QRIS_IMAGE_URL` constant near the top of the account module in `index.html` to `/joki-ml/assets/qris.png`; alternatively, set that constant to the real hosted image URL. No QRIS image is included by this project, and the payment upload stays disabled until a QRIS URL is configured. The payment form accepts JPG/JPEG/PNG proofs up to 5 MB; Supabase Storage keeps them private, and only the owner or database-authorized admin may obtain access.
 
 If login reports `Could not find the function public.jbm_is_admin without parameters in the schema cache`, the database migration has not been applied or PostgREST has not refreshed its schema cache. Review and run the migration above in Supabase **SQL Editor**. If the function is already present, refresh the cache with `NOTIFY pgrst, 'reload schema';`, then retry login. Do not work around this error by checking the admin email in frontend code; admin access must remain database-role based.
 
-Login continues to use email and password. Phone numbers are collected for member profiles and WhatsApp contact; they are not used as login credentials.
+Login uses email and password and, on success, returns to the Beranda. Phone numbers are collected for member profiles and WhatsApp contact; they are not used as login credentials. Google OAuth is not currently configured in this project.
 
 ## Supabase email verification
 
