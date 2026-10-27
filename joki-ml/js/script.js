@@ -204,7 +204,7 @@ function initHeroCanvas() {
       alpha: Math.random() * 0.6 + 0.1,
       dx:    (Math.random() - 0.5) * 0.4,
       dy:    (Math.random() - 0.5) * 0.4,
-      color: Math.random() > 0.5 ? "0, 217, 255" : "255, 200, 87",
+      color: Math.random() > 0.5 ? "236, 72, 153" : "219, 39, 119",
     };
   }
 
@@ -240,7 +240,7 @@ function initHeroCanvas() {
         const dist = Math.sqrt(dx * dx + dy * dy);
         if (dist < 100) {
           ctx.beginPath();
-          ctx.strokeStyle = `rgba(0, 217, 255, ${0.06 * (1 - dist / 100)})`;
+          ctx.strokeStyle = `rgba(219, 39, 119, ${0.04 * (1 - dist / 100)})`;
           ctx.lineWidth = 0.5;
           ctx.moveTo(particles[i].x, particles[i].y);
           ctx.lineTo(particles[j].x, particles[j].y);
@@ -769,7 +769,7 @@ function initLiveToasts() {
     toast.innerHTML = `
       <div class="toast__avatar" style="background:linear-gradient(135deg,${
         order.color === "gold"   ? "var(--clr-gold-dark),var(--clr-gold)" :
-        order.color === "purple" ? "#7E22CE,var(--clr-purple)" :
+        order.color === "purple" ? "var(--pink-deep),var(--plum-dark)" :
                                    "var(--clr-cyan-dark),var(--clr-cyan)"
       })">${order.initial}</div>
       <div class="toast__body">

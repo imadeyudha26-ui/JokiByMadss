@@ -5,8 +5,8 @@
 .account-page {
   min-height: 100vh;
   background:
-    radial-gradient(ellipse at 12% 0%, rgba(0, 217, 255, 0.1), transparent 34rem),
-    radial-gradient(ellipse at 90% 12%, rgba(255, 200, 87, 0.08), transparent 30rem),
+    radial-gradient(ellipse at 12% 0%, rgba(252, 231, 243, 0.72), transparent 34rem),
+    radial-gradient(ellipse at 90% 12%, rgba(236, 72, 153, 0.04), transparent 30rem),
     var(--clr-bg);
 }
 
@@ -18,7 +18,7 @@
   gap: 1.5rem;
   padding: 0.8rem var(--container-pad);
   border-bottom: 1px solid var(--clr-border);
-  background: rgba(8, 11, 20, 0.82);
+  background: rgba(255, 255, 255, 0.94);
 }
 
 .account-brand {
@@ -59,7 +59,7 @@
   padding: clamp(1.25rem, 4vw, 2.5rem);
   border: 1px solid var(--glass-border);
   border-radius: 18px;
-  background: rgba(16, 21, 34, 0.88);
+  background: var(--surface-white);
   box-shadow: var(--shadow-card);
 }
 
@@ -119,18 +119,18 @@
   border: 1px solid var(--clr-border);
   border-radius: 9px;
   outline: none;
-  background: var(--clr-bg);
+  background: var(--surface-white);
   color: var(--clr-text);
   font: inherit;
 }
 
 .account-input:focus {
-  border-color: var(--clr-cyan);
-  box-shadow: 0 0 0 3px var(--clr-cyan-glow);
+  border-color: var(--pink-deep);
+  box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.16);
 }
 
 .account-input option {
-  background: var(--clr-bg-2);
+  background: var(--surface-white);
   color: var(--clr-text);
 }
 
@@ -144,7 +144,7 @@
   padding: 1rem;
   border: 1px solid var(--clr-border-gold);
   border-radius: 10px;
-  background: rgba(255, 200, 87, 0.06);
+  background: var(--pink-soft);
   color: var(--clr-text-2);
 }
 
@@ -161,6 +161,7 @@
 .account-submit:disabled {
   cursor: wait;
   opacity: 0.65;
+  box-shadow: none;
 }
 
 .account-switch {
@@ -201,8 +202,8 @@
 }
 
 .account-table th {
-  background: rgba(255, 255, 255, 0.04);
-  color: var(--clr-gold);
+  background: var(--pink-soft);
+  color: var(--plum-dark);
   font-weight: 700;
 }
 
@@ -215,9 +216,13 @@
   padding: 0.45rem;
   border: 1px solid var(--clr-border);
   border-radius: 7px;
-  background: var(--clr-bg);
+  background: var(--surface-white);
   color: var(--clr-text);
   font: inherit;
+}
+.account-table select:focus-visible {
+  outline: 2px solid var(--pink-deep);
+  outline-offset: 2px;
 }
 
 .account-empty {
