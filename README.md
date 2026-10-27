@@ -23,6 +23,8 @@ The browser loads Supabase JS from its CDN. The project URL and publishable key 
 
 Before enabling member profiles and order administration, inspect the deployed `public.orders` schema and policies, then review and apply `supabase/migrations/20261028000000_secure_member_orders.sql` in the Supabase SQL editor. The migration expects the existing `orders` table and the fields used by the app (`user_id`, `email`, `status`, `created_at`, `item`, `price`, `nick`, `game_id`, `via`, `bayar`, and `note`). It creates the profile and role tables, assigns the existing `imadeyudha26@gmail.com` Auth user the admin role, and adds restrictive RLS policies without deleting existing policies. If that account does not already exist, create/verify it through the normal Auth process before applying the migration; the migration does not create an account or change its password. Enable the `orders` table in the `supabase_realtime` publication if live order updates are desired.
 
+If login reports `Could not find the function public.jbm_is_admin without parameters in the schema cache`, the database migration has not been applied or PostgREST has not refreshed its schema cache. Review and run the migration above in Supabase **SQL Editor**. If the function is already present, refresh the cache with `NOTIFY pgrst, 'reload schema';`, then retry login. Do not work around this error by checking the admin email in frontend code; admin access must remain database-role based.
+
 Login continues to use email and password. Phone numbers are collected for member profiles and WhatsApp contact; they are not used as login credentials.
 
 ## Supabase email verification

@@ -1383,9 +1383,23 @@
       return data.session;
     }
 
+    function isAdminFunctionUnavailable(error) {
+      return error?.code === "PGRST202" ||
+        /could not find the function public\.jbm_is_admin/i.test(error?.message || "");
+    }
+
     async function isAdmin(supabase) {
       const { data, error } = await supabase.rpc("jbm_is_admin");
-      if (error) throw error;
+      if (error) {
+        if (isAdminFunctionUnavailable(error)) {
+          throw new Error(
+            "Login Supabase berhasil, tetapi fungsi pemeriksaan admin belum tersedia. " +
+            "Jalankan migrasi supabase/migrations/20261028000000_secure_member_orders.sql " +
+            "di Supabase SQL Editor, lalu muat ulang schema cache."
+          );
+        }
+        throw error;
+      }
       return data === true;
     }
 
@@ -1519,7 +1533,10 @@
             button.disabled = false;
           }
         } catch (error) {
-          setMessage("loginMsg", "Gagal: " + error.message);
+          const message = error.message || String(error);
+          setMessage("loginMsg", message.startsWith("Login Supabase berhasil,")
+            ? message
+            : "Gagal: " + message);
           button.disabled = false;
         }
       };

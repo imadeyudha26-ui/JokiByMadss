@@ -176,3 +176,5 @@ begin
     on conflict (user_id) do update set role = excluded.role;
 end;
 $$;
+
+notify pgrst, 'reload schema';
