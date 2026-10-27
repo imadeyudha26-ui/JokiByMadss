@@ -67,7 +67,7 @@
   <!-- ============================================================
        FLOATING WHATSAPP BUTTON
        ============================================================ -->
-  <a href="#" id="floatingWA" class="floating-wa" onclick="orderViaWhatsApp(); return false;"
+  <a href="#" id="floatingWA" class="floating-wa" onclick="contactCustomerService(); return false;"
     aria-label="Chat WhatsApp sekarang" title="Chat kami di WhatsApp">
     <i class="fab fa-whatsapp" aria-hidden="true"></i>
     <span class="floating-wa__label">Chat Sekarang</span>
@@ -117,18 +117,12 @@
           <li><a href="#harga" class="navbar__link" data-nav="harga">Harga</a></li>
           <li><a href="#kalkulator" class="navbar__link" data-nav="kalkulator">Kalkulator</a></li>
           <li><a href="#keunggulan" class="navbar__link" data-nav="keunggulan">Keunggulan</a></li>
-          <li><a href="#faq" class="navbar__link" data-nav="faq">FAQ</a></li>
-          <li><a href="/index.html?page=login" class="navbar__link">Masuk</a></li>
           <li><a href="/index.html?page=order" class="navbar__link">Order</a></li>
           <li><a href="/index.html?page=pesanan" class="navbar__link">Pesanan</a></li>
-          <li><a href="/index.html?page=admin" class="navbar__link">Admin</a></li>
+          <li><a href="#faq" class="navbar__link" data-nav="faq">FAQ</a></li>
+          <li id="publicAdminNav" hidden><a href="/index.html?page=admin" class="navbar__link">Admin</a></li>
         </ul>
       </nav>
-
-      <a href="#" class="btn btn--gold navbar__cta" onclick="orderViaWhatsApp(); return false;"
-        aria-label="Order joki sekarang via WhatsApp">
-        <i class="fab fa-whatsapp"></i> Joki Sekarang
-      </a>
 
       <button class="navbar__hamburger" id="hamburger" aria-label="Buka menu navigasi" aria-expanded="false"
         aria-controls="mobileMenu">
@@ -146,16 +140,11 @@
         <li><a href="#harga" class="navbar__mobile-link">Harga</a></li>
         <li><a href="#kalkulator" class="navbar__mobile-link">Kalkulator</a></li>
         <li><a href="#keunggulan" class="navbar__mobile-link">Keunggulan</a></li>
+        <li><a href="/index.html?page=order" class="navbar__mobile-link">Order</a></li>
+        <li><a href="/index.html?page=pesanan" class="navbar__mobile-link">Pesanan</a></li>
         <li><a href="#faq" class="navbar__mobile-link">FAQ</a></li>
-        <li><a href="/index.html?page=login" class="navbar__mobile-link">Masuk</a></li>
-        <li><a href="/index.html?page=order" class="navbar__mobile-link">Buat Pesanan</a></li>
-        <li><a href="/index.html?page=pesanan" class="navbar__mobile-link">Pesanan Saya</a></li>
-        <li><a href="/index.html?page=admin" class="navbar__mobile-link">Admin</a></li>
+        <li id="mobileAdminNav" hidden><a href="/index.html?page=admin" class="navbar__mobile-link">Admin</a></li>
       </ul>
-      <a href="#" class="btn btn--gold btn--full-mobile mt-1" onclick="orderViaWhatsApp(); return false;"
-        aria-label="Order joki sekarang via WhatsApp">
-        <i class="fab fa-whatsapp"></i> Joki Sekarang
-      </a>
     </div>
   </header>
 
@@ -195,9 +184,9 @@
           </p>
 
           <div class="hero__actions">
-            <a href="#" class="btn btn--gold btn--lg" onclick="orderViaWhatsApp(); return false;"
-              aria-label="Order joki sekarang via WhatsApp">
-              <i class="fab fa-whatsapp"></i> Joki Sekarang
+            <a href="/index.html?page=order" class="btn btn--gold btn--lg"
+              aria-label="Buat pesanan">
+              <i class="fas fa-cart-shopping"></i> Buat Pesanan
             </a>
             <a href="#kalkulator" class="btn btn--outline btn--lg">
               <i class="fas fa-calculator"></i> Hitung Harga
@@ -896,9 +885,8 @@
               <span class="faq__icon" aria-hidden="true"><i class="fas fa-chevron-down"></i></span>
             </button>
             <div class="faq__answer" id="faqA3" role="region" aria-labelledby="faqQ3">
-              <p>Sangat mudah! Gunakan kalkulator harga untuk estimasi biaya, klik tombol "Joki Sekarang", dan kamu akan
-                diarahkan ke WhatsApp kami. Diskusikan detail order dengan admin, lakukan pembayaran, dan proses joki
-                dimulai.</p>
+              <p>Gunakan kalkulator harga untuk mendapatkan estimasi, lalu pilih Buat Pesanan untuk mengisi detail akun
+                game. Setelah pesanan dikirim, admin akan mengonfirmasi detail dan pembayaran.</p>
             </div>
           </div>
 
@@ -970,9 +958,9 @@
             Jangan biarkan rank impian cuma jadi target. Mulai order joki sekarang dan rasakan perbedaannya.
           </p>
           <div class="cta__actions">
-            <a href="#" class="btn btn--gold btn--xl" onclick="orderViaWhatsApp(); return false;"
-              aria-label="Order joki Mobile Legends sekarang via WhatsApp">
-              <i class="fab fa-whatsapp"></i> Joki Sekarang
+            <a href="/index.html?page=order" class="btn btn--gold btn--xl"
+              aria-label="Buat pesanan joki Mobile Legends">
+              <i class="fas fa-cart-shopping"></i> Buat Pesanan
             </a>
             <a href="#kalkulator" class="btn btn--outline btn--xl">
               <i class="fas fa-calculator"></i> Hitung Dulu
@@ -1015,7 +1003,7 @@
               <i class="fab fa-tiktok"></i>
             </a>
             <a href="#" class="footer__social-btn footer__social-btn--wa" aria-label="WhatsApp [JokiByMadss]"
-              onclick="orderViaWhatsApp(); return false;">
+              onclick="contactCustomerService(); return false;">
               <i class="fab fa-whatsapp"></i>
             </a>
           </div>
@@ -1029,7 +1017,7 @@
             <li><a href="#harga">Harga</a></li>
             <li><a href="#kalkulator">Kalkulator</a></li>
             <li><a href="#faq">FAQ</a></li>
-            <li><a href="#" onclick="orderViaWhatsApp(); return false;">Kontak</a></li>
+            <li><a href="#" onclick="contactCustomerService(); return false;">Kontak</a></li>
           </ul>
         </nav>
 
@@ -1049,7 +1037,7 @@
           <h3 class="footer__nav-title">Kontak</h3>
           <ul role="list">
             <li>
-              <a href="#" onclick="orderViaWhatsApp(); return false;" class="footer__contact-item">
+              <a href="#" onclick="contactCustomerService(); return false;" class="footer__contact-item">
                 <i class="fab fa-whatsapp" aria-hidden="true"></i>
                 <span>Chat via WhatsApp</span>
               </a>
@@ -1092,6 +1080,8 @@
       <nav class="account-nav" aria-label="Navigasi akun">
         <a href="/index.html?page=order">Buat pesanan</a>
         <a href="/index.html?page=pesanan">Pesanan saya</a>
+        <a href="/index.html?page=profil" id="accountProfileNav" hidden>Profil</a>
+        <a href="/index.html?page=admin" id="accountAdminNav" hidden>Admin</a>
         <a href="/index.html">Beranda</a>
         <a href="#" id="out" hidden>Keluar</a>
       </nav>
@@ -1107,6 +1097,13 @@
         <h1 id="loginTitle">Masuk</h1>
         <p class="account-intro">Masuk untuk membuat dan memantau pesananmu.</p>
         <form id="loginForm">
+          <div id="signupFields" hidden>
+            <label class="account-label" for="fullName">Nama lengkap</label>
+            <input class="account-input" id="fullName" name="fullName" autocomplete="name" maxlength="120" />
+            <label class="account-label" for="signupPhone">Nomor HP / WhatsApp</label>
+            <input class="account-input" id="signupPhone" name="phone" type="tel" autocomplete="tel"
+              inputmode="tel" placeholder="08xxxxxxxxxx" />
+          </div>
           <label class="account-label" for="email">Email</label>
           <input class="account-input" id="email" name="email" type="email" autocomplete="email" required />
           <label class="account-label" for="pass">Kata sandi</label>
@@ -1123,6 +1120,21 @@
           <button class="btn btn--gold btn--md account-submit" id="go" type="submit">Masuk</button>
         </form>
         <a class="account-switch" href="#" id="switch">Belum punya akun? Daftar</a>
+      </section>
+
+      <section id="profileView" class="account-view account-card account-card--login" aria-labelledby="profileTitle" hidden>
+        <p class="account-eyebrow">PROFIL MEMBER</p>
+        <h1 id="profileTitle">Lengkapi Profil</h1>
+        <p class="account-intro">Nama dan nomor HP digunakan pada pesanan agar admin dapat menghubungi kamu.</p>
+        <form id="profileForm">
+          <label class="account-label" for="profileName">Nama lengkap</label>
+          <input class="account-input" id="profileName" name="fullName" autocomplete="name" maxlength="120" required />
+          <label class="account-label" for="profilePhone">Nomor HP / WhatsApp</label>
+          <input class="account-input" id="profilePhone" name="phone" type="tel" autocomplete="tel"
+            inputmode="tel" placeholder="08xxxxxxxxxx" required />
+          <p id="profileMsg" class="account-message" role="status" aria-live="polite"></p>
+          <button class="btn btn--gold btn--md account-submit" id="saveProfile" type="submit">Simpan Profil</button>
+        </form>
       </section>
 
       <section
@@ -1174,15 +1186,16 @@
           <table class="account-table">
             <thead>
               <tr>
+                <th scope="col">ID</th>
                 <th scope="col">Tanggal</th>
                 <th scope="col">Layanan</th>
+                <th scope="col">Detail order</th>
                 <th scope="col">Harga</th>
-                <th scope="col">Pembayaran</th>
                 <th scope="col">Status</th>
               </tr>
             </thead>
             <tbody id="orderRows">
-              <tr><td colspan="5" class="account-empty">Memuat pesanan...</td></tr>
+              <tr><td colspan="6" class="account-empty">Memuat pesanan...</td></tr>
             </tbody>
           </table>
         </div>
@@ -1197,33 +1210,55 @@
         <p class="account-eyebrow">PANEL ADMIN</p>
         <h1 id="adminTitle">Kelola Pesanan</h1>
         <p class="account-intro">Lihat pesanan terbaru dan perbarui status pengerjaannya.</p>
+        <label class="account-label" for="adminStatusFilter">Filter status</label>
+        <select class="account-input account-filter" id="adminStatusFilter">
+          <option value="">Semua status</option>
+          <option>Menunggu Pembayaran</option>
+          <option>Dibayar</option>
+          <option>Sedang Dikerjakan</option>
+          <option>Selesai</option>
+          <option>Dibatalkan</option>
+        </select>
         <p id="total" class="account-count" aria-live="polite">Memuat pesanan...</p>
         <p id="adminMsg" class="account-message" role="status" aria-live="polite"></p>
         <div class="account-table-wrap">
           <table class="account-table">
             <thead>
               <tr>
+                <th scope="col">ID</th>
                 <th scope="col">Tanggal</th>
-                <th scope="col">Email</th>
+                <th scope="col">Member</th>
+                <th scope="col">HP / WhatsApp</th>
                 <th scope="col">Layanan</th>
                 <th scope="col">Harga</th>
-                <th scope="col">Data akun</th>
-                <th scope="col">Pembayaran</th>
-                <th scope="col">Catatan</th>
+                <th scope="col">Detail</th>
                 <th scope="col">Status</th>
+                <th scope="col">Aksi</th>
               </tr>
             </thead>
             <tbody id="adminRows">
-              <tr><td colspan="8" class="account-empty">Memuat pesanan...</td></tr>
+              <tr><td colspan="9" class="account-empty">Memuat pesanan...</td></tr>
             </tbody>
           </table>
         </div>
+        <div class="account-pagination">
+          <button class="btn btn--outline btn--sm" id="adminPrev" type="button">Sebelumnya</button>
+          <span id="adminPageLabel" aria-live="polite">Halaman 1</span>
+          <button class="btn btn--outline btn--sm" id="adminNext" type="button">Selanjutnya</button>
+        </div>
       </section>
     </main>
+    <dialog id="orderDetailDialog" class="account-dialog">
+      <div class="account-dialog__content">
+        <button class="account-dialog__close" id="closeOrderDetail" type="button" aria-label="Tutup detail pesanan">&times;</button>
+        <h2>Detail Pesanan</h2>
+        <div id="orderDetailContent"></div>
+      </div>
+    </dialog>
   </div>
 
   <script>
-    const accountRoutes = ["login", "order", "pesanan", "admin"];
+    const accountRoutes = ["login", "profil", "order", "pesanan", "admin"];
     const requestedPage = new URLSearchParams(location.search).get("page");
     const isAccountRoute = accountRoutes.includes(requestedPage);
     if (!isAccountRoute) {
@@ -1236,13 +1271,15 @@
     }
   </script>
   <script type="module">
-    const ADMIN_EMAIL = "imadeyudha26@gmail.com";
     const SUPABASE_URL = "https://vywwuidfiudipupquasw.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_jP7b5v10Amd_0-USiAg92g_azM5nC_K";
     const STATUS = ["Menunggu Pembayaran", "Dibayar", "Sedang Dikerjakan", "Selesai", "Dibatalkan"];
+    const ADMIN_PAGE_SIZE = 25;
+    let adminPage = 0;
     const params = new URLSearchParams(location.search);
     const accountViews = {
       login: "loginView",
+      profil: "profileView",
       order: "orderView",
       pesanan: "ordersView",
       admin: "adminView"
@@ -1257,19 +1294,36 @@
       return target.pathname + target.search;
     }
 
-    function signupOptions() {
+    function safeAccountNext(value, fallback = routeUrl("pesanan")) {
+      if (!value) return fallback;
+      try {
+        const target = new URL(value, location.origin);
+        const isLanding = target.pathname === "/index.html" && !target.search && !target.hash;
+        const allowed = isLanding ||
+          ["profil", "order", "pesanan", "admin"].includes(target.searchParams.get("page"));
+        return target.origin === location.origin && target.pathname === "/index.html" && allowed
+          ? target.pathname + target.search
+          : fallback;
+      } catch {
+        return fallback;
+      }
+    }
+
+    function signupOptions(fullName, phone) {
+      const options = { data: { full_name: fullName, phone } };
       const hostname = location.hostname.toLowerCase();
       const isLocalhost = hostname === "localhost" ||
         hostname === "127.0.0.1" ||
         hostname === "[::1]" ||
         hostname.endsWith(".localhost");
 
-      if (isLocalhost) return {};
+      if (isLocalhost) return options;
 
       const emailRedirectTo = new URL("/index.html", location.origin);
       emailRedirectTo.searchParams.set("page", "login");
       emailRedirectTo.searchParams.set("verified", "1");
-      return { emailRedirectTo: emailRedirectTo.href };
+      options.emailRedirectTo = emailRedirectTo.href;
+      return options;
     }
 
     function readAuthCallback() {
@@ -1307,10 +1361,65 @@
       document.getElementById(id).textContent = message;
     }
 
+    function normalizePhone(value) {
+      const input = String(value || "").trim();
+      let digits = input.replace(/\D/g, "");
+      if (!input.startsWith("+")) {
+        if (digits.startsWith("00")) digits = digits.slice(2);
+        else if (digits.startsWith("0")) digits = "62" + digits.slice(1);
+        else if (!digits.startsWith("62")) digits = "62" + digits;
+      }
+      if (digits.length < 9 || digits.length > 15) return "";
+      return "+" + digits;
+    }
+
+    function validPhone(phone) {
+      return /^\+[1-9]\d{7,14}$/.test(phone);
+    }
+
     async function getSession(supabase) {
       const { data, error } = await supabase.auth.getSession();
       if (error) throw error;
       return data.session;
+    }
+
+    async function isAdmin(supabase) {
+      const { data, error } = await supabase.rpc("jbm_is_admin");
+      if (error) throw error;
+      return data === true;
+    }
+
+    async function loadMemberProfile(supabase, user) {
+      const { data, error } = await supabase.from("jbm_member_profiles")
+        .select("full_name, phone")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      if (error) throw error;
+      if (data?.phone && data.full_name?.trim()) return data;
+
+      const metadata = user.user_metadata || {};
+      const phone = normalizePhone(metadata.phone || "");
+      const fullName = String(metadata.full_name || "").trim();
+      if (!fullName || !validPhone(phone)) return null;
+
+      const { data: saved, error: saveError } = await supabase.from("jbm_member_profiles")
+        .upsert({ user_id: user.id, full_name: fullName, phone, updated_at: new Date().toISOString() })
+        .select("full_name, phone")
+        .single();
+      if (saveError) throw saveError;
+      return saved;
+    }
+
+    function setAdminNavigation(visible) {
+      ["publicAdminNav", "mobileAdminNav", "accountAdminNav"].forEach(id => {
+        const link = document.getElementById(id);
+        if (link) link.hidden = !visible;
+      });
+    }
+
+    function setProfileNavigation(visible) {
+      const link = document.getElementById("accountProfileNav");
+      if (link) link.hidden = !visible;
     }
 
     function showAccountView() {
@@ -1319,11 +1428,12 @@
       document.body.classList.add("account-page");
 
       document.querySelectorAll(".account-view").forEach(view => {
-        view.hidden = view.id !== accountViews[page];
+        view.hidden = view.id !== accountViews[page] || (page === "admin" && view.id === "adminView");
       });
 
       const titles = {
         admin: "Admin Pesanan",
+        profil: "Lengkapi Profil",
         order: "Buat Pesanan",
         pesanan: "Pesanan Saya",
         login: "Masuk"
@@ -1337,18 +1447,15 @@
       if (!user) return false;
 
       const next = params.get("next");
-      let safeNext = routeUrl("pesanan");
-      if (next) {
-        const target = new URL(next, location.origin);
-        const isAllowedPage = ["order", "pesanan"].includes(target.searchParams.get("page"));
-        if (target.origin === location.origin && target.pathname === "/index.html" && isAllowedPage) {
-          safeNext = target.pathname + target.search;
-        }
+      let safeNext = safeAccountNext(next);
+
+      const admin = await isAdmin(supabase);
+      if (!admin) {
+        const profile = await loadMemberProfile(supabase, user);
+        if (!profile) safeNext = routeUrl("profil", { next: safeNext });
       }
 
-      const destination = user.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase()
-        ? routeUrl("admin")
-        : safeNext;
+      const destination = admin && !next ? routeUrl("admin") : safeNext;
       location.href = destination;
       return true;
     }
@@ -1359,10 +1466,15 @@
       const button = document.getElementById("go");
       const password = document.getElementById("pass");
       const switchLink = document.getElementById("switch");
+      const signupFields = document.getElementById("signupFields");
+      const fullName = document.getElementById("fullName");
+      const phoneInput = document.getElementById("signupPhone");
 
       switchLink.onclick = event => {
         event.preventDefault();
         daftar = !daftar;
+        signupFields.hidden = !daftar;
+        fullName.required = phoneInput.required = daftar;
         document.getElementById("loginTitle").textContent = button.textContent = daftar ? "Daftar" : "Masuk";
         switchLink.textContent = daftar ? "Sudah punya akun? Masuk" : "Belum punya akun? Daftar";
         password.autocomplete = daftar ? "new-password" : "current-password";
@@ -1378,11 +1490,18 @@
           email: document.getElementById("email").value.trim(),
           password: password.value
         };
+        const fullNameValue = fullName.value.trim();
+        const phone = normalizePhone(phoneInput.value);
+        if (daftar && (!fullNameValue || !validPhone(phone))) {
+          setMessage("loginMsg", "Isi nama dan nomor HP yang valid (contoh: 081234567890).");
+          button.disabled = false;
+          return;
+        }
         try {
           const { error } = daftar
             ? await supabase.auth.signUp({
               ...credentials,
-              options: signupOptions()
+              options: signupOptions(fullNameValue, phone)
             })
             : await supabase.auth.signInWithPassword(credentials);
 
@@ -1410,13 +1529,49 @@
       else if (authCallback.verified) setMessage("loginMsg", "Email berhasil diverifikasi. Silakan masuk.");
     }
 
+    async function initializeProfilePage(supabase, user) {
+      const profile = await loadMemberProfile(supabase, user);
+      document.getElementById("profileName").value = profile?.full_name || user.user_metadata?.full_name || "";
+      document.getElementById("profilePhone").value = profile?.phone || user.user_metadata?.phone || "";
+      initializeSignOut(supabase);
+
+      document.getElementById("profileForm").onsubmit = async event => {
+        event.preventDefault();
+        setMessage("profileMsg", "");
+        const name = document.getElementById("profileName").value.trim();
+        const phone = normalizePhone(document.getElementById("profilePhone").value);
+        if (!name || !validPhone(phone)) {
+          setMessage("profileMsg", "Isi nama dan nomor HP yang valid (contoh: 081234567890).");
+          return;
+        }
+
+        const saveButton = document.getElementById("saveProfile");
+        saveButton.disabled = true;
+        try {
+          const { error } = await supabase.from("jbm_member_profiles").upsert({
+            user_id: user.id,
+            full_name: name,
+            phone,
+            updated_at: new Date().toISOString()
+          });
+          if (error) throw error;
+
+          location.href = safeAccountNext(params.get("next"), routeUrl("order"));
+        } catch (error) {
+          setMessage("profileMsg", "Gagal menyimpan profil: " + error.message);
+          saveButton.disabled = false;
+        }
+      };
+    }
+
     function initializeSignOut(supabase) {
       document.getElementById("out").hidden = false;
+      setProfileNavigation(true);
       document.getElementById("out").onclick = async event => {
         event.preventDefault();
         const { error } = await supabase.auth.signOut();
         if (error) {
-          const messageId = page === "admin" ? "adminMsg" : "ordersMsg";
+          const messageId = page === "admin" ? "adminMsg" : page === "profil" ? "profileMsg" : "ordersMsg";
           setMessage(messageId, "Gagal keluar: " + error.message);
           return;
         }
@@ -1431,7 +1586,8 @@
       const estimate = price ? formatRupiah(price) : "dikonfirmasi admin";
 
       document.getElementById("ringkas").innerHTML =
-        `<b>${escapeHtml(item || "Layanan")}</b><br>Estimasi: ${estimate}`;
+        `<b>${escapeHtml(item || "Layanan")}</b><br>Estimasi: ${estimate}<br>` +
+        `Nama: ${escapeHtml(session.profile.full_name)}<br>Nomor HP: ${escapeHtml(session.profile.phone)}`;
 
       document.getElementById("orderForm").onsubmit = async event => {
         event.preventDefault();
@@ -1446,36 +1602,36 @@
 
         const submit = document.getElementById("kirim");
         submit.disabled = true;
-        const { error } = await supabase.from("orders").insert({
-          item,
-          price,
-          user_id: session.user.id,
-          email: session.user.email,
-          nick: nickname,
-          game_id: gameId,
-          via: document.getElementById("via").value,
-          bayar: document.getElementById("bayar").value,
-          note: document.getElementById("note").value.trim()
-        });
+        try {
+          const { error } = await supabase.from("orders").insert({
+            item: item || "Layanan",
+            price,
+            nick: nickname,
+            game_id: gameId,
+            via: document.getElementById("via").value,
+            bayar: document.getElementById("bayar").value,
+            note: document.getElementById("note").value.trim(),
+            status: "Menunggu Pembayaran"
+          });
+          if (error) throw error;
 
-        if (error) {
+          setMessage("orderMsg", "Pesanan berhasil dikirim dan berstatus Menunggu Pembayaran.");
+          location.href = routeUrl("pesanan", { created: "1" });
+        } catch (error) {
           setMessage("orderMsg", "Gagal mengirim pesanan: " + error.message);
           submit.disabled = false;
-          return;
         }
-
-        location.href = routeUrl("pesanan");
       };
     }
 
-    async function initializeOrdersPage(supabase, session) {
+    async function loadMemberOrders(supabase, session) {
       const { data, error } = await supabase.from("orders").select("*")
         .eq("user_id", session.user.id)
         .order("created_at", { ascending: false });
 
       if (error) {
         document.getElementById("orderRows").innerHTML =
-          '<tr><td colspan="5" class="account-empty">Gagal memuat pesanan.</td></tr>';
+          '<tr><td colspan="6" class="account-empty">Gagal memuat pesanan.</td></tr>';
         setMessage("ordersMsg", "Gagal memuat pesanan: " + error.message);
         return;
       }
@@ -1484,69 +1640,149 @@
       document.getElementById("orderRows").innerHTML = orders.length
         ? orders.map(order => `
             <tr>
+              <td>${escapeHtml(order.id)}</td>
               <td>${escapeHtml(new Date(order.created_at).toLocaleString("id-ID"))}</td>
               <td>${escapeHtml(order.item)}</td>
+              <td>${escapeHtml(order.nick)}<br>ID: ${escapeHtml(order.game_id)}<br>${escapeHtml(order.via)}</td>
               <td>${order.price ? formatRupiah(order.price) : "-"}</td>
-              <td>${escapeHtml(order.bayar)}</td>
               <td><b>${escapeHtml(order.status)}</b></td>
             </tr>
           `).join("")
-        : '<tr><td colspan="5" class="account-empty">Belum ada pesanan.</td></tr>';
+        : '<tr><td colspan="6" class="account-empty">Kamu belum memiliki pesanan. Pilih menu Order untuk membuat pesanan pertamamu.</td></tr>';
+
+      if (params.get("created") === "1") {
+        setMessage("ordersMsg", "Pesanan berhasil tersimpan. Status terbaru: Menunggu Pembayaran.");
+      }
+
+    }
+
+    async function initializeOrdersPage(supabase, session) {
+      await loadMemberOrders(supabase, session);
+      supabase.channel(`member-orders-${session.user.id}`)
+        .on("postgres_changes", {
+          event: "*",
+          schema: "public",
+          table: "orders",
+          filter: `user_id=eq.${session.user.id}`
+        }, () => loadMemberOrders(supabase, session))
+        .subscribe(status => {
+          if (status === "CHANNEL_ERROR" || status === "TIMED_OUT") {
+            setMessage("ordersMsg", "Pembaruan status langsung tidak tersedia. Muat ulang halaman untuk data terbaru.");
+          }
+        });
     }
 
     async function loadAdminOrders(supabase) {
       setMessage("adminMsg", "");
-      const { data, error } = await supabase.from("orders").select("*")
+      const filter = document.getElementById("adminStatusFilter").value;
+      const from = adminPage * ADMIN_PAGE_SIZE;
+      let request = supabase.from("orders").select("*", { count: "exact" })
         .order("created_at", { ascending: false });
+      if (filter) request = request.eq("status", filter);
+      const { data, error, count } = await request.range(from, from + ADMIN_PAGE_SIZE - 1);
 
       if (error) {
         document.getElementById("total").textContent = "Pesanan tidak dapat dimuat";
         document.getElementById("adminRows").innerHTML =
-          '<tr><td colspan="8" class="account-empty">Gagal memuat pesanan.</td></tr>';
+          '<tr><td colspan="9" class="account-empty">Gagal memuat pesanan.</td></tr>';
         setMessage("adminMsg", "Gagal memuat pesanan: " + error.message);
         return;
       }
 
       const orders = data || [];
-      document.getElementById("total").textContent = orders.length + " pesanan";
+      const total = count || 0;
+      const pageCount = Math.max(1, Math.ceil(total / ADMIN_PAGE_SIZE));
+      adminPage = Math.min(adminPage, pageCount - 1);
+      document.getElementById("total").textContent = `${total} pesanan`;
+      document.getElementById("adminPageLabel").textContent = `Halaman ${adminPage + 1} dari ${pageCount}`;
+      document.getElementById("adminPrev").disabled = adminPage === 0;
+      document.getElementById("adminNext").disabled = adminPage >= pageCount - 1;
       document.getElementById("adminRows").innerHTML = orders.length
         ? orders.map(order => `
             <tr>
+              <td>${escapeHtml(order.id)}</td>
               <td>${escapeHtml(new Date(order.created_at).toLocaleString("id-ID"))}</td>
-              <td>${escapeHtml(order.email)}</td>
+              <td>${escapeHtml(order.full_name || order.email)}<br><small>${escapeHtml(order.email)}</small></td>
+              <td>${escapeHtml(order.phone || "-")}</td>
               <td>${escapeHtml(order.item)}</td>
               <td>${order.price ? formatRupiah(order.price) : "-"}</td>
-              <td>${escapeHtml(order.nick)}<br>${escapeHtml(order.game_id)}<br>${escapeHtml(order.via)}</td>
-              <td>${escapeHtml(order.bayar)}</td>
-              <td>${escapeHtml(order.note)}</td>
+              <td>${escapeHtml(order.nick)}<br>ID: ${escapeHtml(order.game_id)}<br>${escapeHtml(order.via)}<br>${escapeHtml(order.bayar)}</td>
               <td>
                 <select aria-label="Status pesanan ${escapeHtml(order.id)}" data-id="${escapeHtml(order.id)}">
                   ${STATUS.map(status => `<option ${status === order.status ? "selected" : ""}>${status}</option>`).join("")}
                 </select>
               </td>
+              <td class="account-order-actions">
+                <button class="btn btn--outline btn--sm" type="button" data-detail-id="${escapeHtml(order.id)}">Detail</button>
+                ${order.phone ? `<a class="btn btn--gold btn--sm" target="_blank" rel="noopener noreferrer"
+                  href="https://wa.me/${escapeHtml(String(order.phone).replace(/\D/g, ""))}?text=${encodeURIComponent(`Halo ${order.full_name || order.email}, terkait pesanan ${order.id} di JokiByMadss.`)}">WhatsApp</a>` : ""}
+              </td>
             </tr>
           `).join("")
-        : '<tr><td colspan="8" class="account-empty">Belum ada pesanan.</td></tr>';
+        : '<tr><td colspan="9" class="account-empty">Belum ada pesanan untuk filter ini.</td></tr>';
+
+      const detailsById = new Map(orders.map(order => [String(order.id), order]));
+      document.querySelectorAll("#adminRows button[data-detail-id]").forEach(button => {
+        button.onclick = () => {
+          const order = detailsById.get(button.dataset.detailId);
+          if (!order) return;
+          document.getElementById("orderDetailContent").innerHTML = `
+            <dl class="account-detail-list">
+              <dt>ID Pesanan</dt><dd>${escapeHtml(order.id)}</dd>
+              <dt>Tanggal</dt><dd>${escapeHtml(new Date(order.created_at).toLocaleString("id-ID"))}</dd>
+              <dt>Member</dt><dd>${escapeHtml(order.full_name || "-")} · ${escapeHtml(order.email)}</dd>
+              <dt>Nomor HP</dt><dd>${escapeHtml(order.phone || "-")}</dd>
+              <dt>Layanan</dt><dd>${escapeHtml(order.item)}</dd>
+              <dt>Nickname</dt><dd>${escapeHtml(order.nick)}</dd>
+              <dt>ID / Server</dt><dd>${escapeHtml(order.game_id)}</dd>
+              <dt>Login melalui</dt><dd>${escapeHtml(order.via)}</dd>
+              <dt>Pembayaran</dt><dd>${escapeHtml(order.bayar)}</dd>
+              <dt>Catatan</dt><dd>${escapeHtml(order.note || "-")}</dd>
+              <dt>Total harga</dt><dd>${formatRupiah(order.price)}</dd>
+              <dt>Status</dt><dd>${escapeHtml(order.status)}</dd>
+            </dl>`;
+          document.getElementById("orderDetailDialog").showModal();
+        };
+      });
 
       document.querySelectorAll("#adminRows select[data-id]").forEach(select => {
         select.onchange = async () => {
           select.disabled = true;
-          const { error: updateError } = await supabase.from("orders")
-            .update({ status: select.value })
-            .eq("id", select.dataset.id);
-          select.disabled = false;
-
-          if (updateError) {
-            await loadAdminOrders(supabase);
-            setMessage("adminMsg", "Gagal memperbarui status: " + updateError.message);
-          } else {
+          try {
+            const { error: updateError } = await supabase.from("orders")
+              .update({ status: select.value })
+              .eq("id", select.dataset.id);
+            if (updateError) throw updateError;
             setMessage("adminMsg", "Status pesanan berhasil diperbarui.");
+            await loadAdminOrders(supabase);
+            setMessage("adminMsg", "Status pesanan berhasil diperbarui.");
+          } catch (error) {
+            setMessage("adminMsg", "Gagal memperbarui status: " + error.message);
+            await loadAdminOrders(supabase);
+          } finally {
+            select.disabled = false;
           }
         };
       });
     }
 
     async function initializeAdminPage(supabase) {
+      document.getElementById("adminView").hidden = false;
+      document.getElementById("adminStatusFilter").onchange = () => {
+        adminPage = 0;
+        loadAdminOrders(supabase);
+      };
+      document.getElementById("adminPrev").onclick = () => {
+        adminPage = Math.max(0, adminPage - 1);
+        loadAdminOrders(supabase);
+      };
+      document.getElementById("adminNext").onclick = () => {
+        adminPage += 1;
+        loadAdminOrders(supabase);
+      };
+      document.getElementById("closeOrderDetail").onclick = () => {
+        document.getElementById("orderDetailDialog").close();
+      };
       await loadAdminOrders(supabase);
       supabase.channel("orders-live")
         .on("postgres_changes", { event: "*", schema: "public", table: "orders" }, () => loadAdminOrders(supabase))
@@ -1565,26 +1801,58 @@
       }
 
       initializeSignOut(supabase);
-      if (page === "order") {
-        initializeOrderPage(supabase, session);
-      } else if (page === "pesanan") {
-        await initializeOrdersPage(supabase, session);
-      } else if (page === "admin") {
-        if (session.user.email?.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+      let admin;
+      try {
+        admin = await isAdmin(supabase);
+      } catch (error) {
+        if (page === "admin") {
+          document.getElementById("adminView").hidden = false;
+          setMessage("adminMsg", "Tidak dapat memverifikasi hak admin: " + error.message);
+          return;
+        }
+        throw error;
+      }
+      setAdminNavigation(admin);
+      if (page === "admin") {
+        if (!admin) {
           location.href = routeUrl("pesanan");
           return;
         }
         await initializeAdminPage(supabase);
+        return;
+      }
+
+      const profile = await loadMemberProfile(supabase, session.user);
+      if (page !== "profil" && !profile) {
+        location.href = routeUrl("profil", { next: routeUrl(page, Object.fromEntries(params.entries())) });
+        return;
+      }
+      session.profile = profile;
+      if (page === "profil") {
+        await initializeProfilePage(supabase, session.user);
+      } else if (page === "order") {
+        initializeOrderPage(supabase, session);
+      } else if (page === "pesanan") {
+        await initializeOrdersPage(supabase, session);
       }
     }
 
     async function initializeAccountPage() {
-      if (!accountViews[page]) return;
-
-      showAccountView();
       try {
         const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2.45.4");
         const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        if (!accountViews[page]) {
+          const session = await getSession(supabase);
+          if (!session?.user) {
+            location.href = routeUrl("login", { next: "/index.html" });
+            return;
+          }
+          setAdminNavigation(await isAdmin(supabase));
+          return;
+        }
+
+        showAccountView();
         const session = await getSession(supabase);
 
         if (page === "login") {
@@ -1595,11 +1863,16 @@
       } catch (error) {
         const messageIds = {
           admin: "adminMsg",
+          profil: "profileMsg",
           order: "orderMsg",
           pesanan: "ordersMsg",
           login: "loginMsg"
         };
-        setMessage(messageIds[page], "Tidak dapat menghubungkan ke layanan akun: " + error.message);
+        if (messageIds[page]) {
+          setMessage(messageIds[page], "Tidak dapat menghubungkan ke layanan akun: " + error.message);
+        } else {
+          console.error("Gagal memuat hak akses admin:", error);
+        }
       }
     }
 

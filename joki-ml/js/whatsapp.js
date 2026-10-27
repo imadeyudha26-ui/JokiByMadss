@@ -75,8 +75,28 @@
     return hi + 'saya mau order *' + item + '*.\n' + akun + '\n\nMohon info harga dan waktunya ya.';
   }
 
+  function getPriceEstimate(item) {
+    var match = String(item || '').match(/estimasi\s+Rp\s*([\d.]+)/i);
+    if (match) return match[1].replace(/\./g, '');
+
+    var el = window.event && window.event.currentTarget;
+    var card = el && el.closest ? el.closest('.pkg-card, .service-card') : null;
+    var price = card && card.querySelector('.pkg-card__price, .service-card__price-value');
+    return price ? price.textContent.replace(/\D/g, '') : '';
+  }
+
   window.orderViaWhatsApp = function (item) {
-    var url = 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(buildMessage(item));
-    window.open(url, '_blank', 'noopener');
+    var url = new URL('/index.html', window.location.origin);
+    url.searchParams.set('page', 'order');
+    if (item) url.searchParams.set('item', item);
+    var price = getPriceEstimate(item);
+    if (price) url.searchParams.set('price', price);
+    window.location.assign(url.href);
+  };
+
+  window.contactCustomerService = function () {
+    var message = 'Halo min, saya ingin mengetahui tentang JokiByMadss.';
+    var url = 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(message);
+    window.open(url, '_blank', 'noopener,noreferrer');
   };
 })();

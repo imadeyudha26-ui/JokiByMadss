@@ -21,6 +21,10 @@ If the Python launcher is unavailable, use `python -m http.server 4173`. Open `h
 
 The browser loads Supabase JS from its CDN. The project URL and publishable key are configured in the account script in `index.html`; the publishable key is not a service-role secret. Configure Supabase Row Level Security policies to protect customer orders and admin operations. Frontend email checks are not a security boundary.
 
+Before enabling member profiles and order administration, inspect the deployed `public.orders` schema and policies, then review and apply `supabase/migrations/20261028000000_secure_member_orders.sql` in the Supabase SQL editor. The migration expects the existing `orders` table and the fields used by the app (`user_id`, `email`, `status`, `created_at`, `item`, `price`, `nick`, `game_id`, `via`, `bayar`, and `note`). It creates the profile and role tables, assigns the existing `imadeyudha26@gmail.com` Auth user the admin role, and adds restrictive RLS policies without deleting existing policies. If that account does not already exist, create/verify it through the normal Auth process before applying the migration; the migration does not create an account or change its password. Enable the `orders` table in the `supabase_realtime` publication if live order updates are desired.
+
+Login continues to use email and password. Phone numbers are collected for member profiles and WhatsApp contact; they are not used as login credentials.
+
 ## Supabase email verification
 
 In the Supabase Dashboard, open **Authentication → URL Configuration** and set:

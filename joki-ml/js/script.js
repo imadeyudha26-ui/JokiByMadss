@@ -8,12 +8,6 @@
    ⚙️  KONFIGURASI — EDIT BAGIAN INI SESUAI KEBUTUHAN
    ============================================================ */
 
-/** Nomor WhatsApp (format: 628xxxxxxxxxx, tanpa + ) */
-const WHATSAPP_NUMBER = "6287828344076";
-
-/** Nama brand untuk pesan WhatsApp otomatis */
-const BRAND_NAME = "[JokiByMadss]";
-
 /**
  * Data harga per paket joki.
  *  - popular : true  → tampilkan badge "POPULAR"
@@ -95,18 +89,15 @@ const LIVE_ORDERS = [
  * @param {string} service - Nama layanan (opsional)
  */
 function orderViaWhatsApp(service = "") {
-  const serviceText = service
-    ? `Layanan   : ${service}`
-    : `Layanan   : (sebutkan layanan yang diinginkan)`;
+  if (typeof window.orderViaWhatsApp === "function") {
+    window.orderViaWhatsApp(service);
+    return;
+  }
 
-  const message =
-    `Halo ${BRAND_NAME}! 👋\n\n` +
-    `Saya ingin melakukan order jasa joki Mobile Legends.\n\n` +
-    `${serviceText}\n\n` +
-    `Mohon informasi harga dan proses order. Terima kasih! 🙏`;
-
-  const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
-  window.open(url, "_blank", "noopener,noreferrer");
+  const url = new URL("/index.html", window.location.origin);
+  url.searchParams.set("page", "order");
+  if (service) url.searchParams.set("item", service);
+  window.location.assign(url.href);
 }
 
 /* ============================================================
