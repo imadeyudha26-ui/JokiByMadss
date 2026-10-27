@@ -1,0 +1,33 @@
+<script type="module">
+import { supabase, ADMIN_EMAIL, rp, esc } from "./js/supabase-config.js";
+
+const STATUS = ["Menunggu Pembayaran", "Dibayar", "Sedang Dikerjakan", "Selesai", "Dibatalkan"];
+document.getElementById("out").onclick = async e => {
+  e.preventDefault(); await supabase.auth.signOut(); location.href = "index.html";
+};
+
+async function muat() {
+  const { data = [] } = await supabase.from("orders").select("*").order("created_at", { ascending: false });
+  document.getElementById("total").textContent = data.length + " pesanan";
+  document.getElementById("rows").innerHTML = data.map(o => `<tr>
+    <td>${new Date(o.created_at).toLocaleString("id-ID")}</td>
+    <td>${esc(o.email)}</td><td>${esc(o.item)}</td><td>${o.price ? rp(o.price) : "-"}</td>
+    <td>${esc(o.nick)}<br>${esc(o.game_id)}<br>${esc(o.via)}</td>
+    <td>${esc(o.bayar)}</td><td>${esc(o.note)}</td>
+    <td><select data-id="${o.id}">${STATUS.map(s =>
+      `<option ${s === o.status ? "selected" : ""}>${s}</option>`).join("")}</select></td></tr>`).join("");
+  document.querySelectorAll("select[data-id]").forEach(sel => {
+    sel.onchange = () => supabase.from("orders").update({ status: sel.value }).eq("id", sel.dataset.id);
+  });
+}
+
+const { data: s } = await supabase.auth.getSession();
+const u = s.session?.user;
+if (!u || u.email !== ADMIN_EMAIL) location.href = "login.html";
+else {
+  muat();
+  supabase.channel("orders-live")
+    .on("postgres_changes", { event: "*", schema: "public", table: "orders" }, muat)
+    .subscribe();
+}
+</script>
