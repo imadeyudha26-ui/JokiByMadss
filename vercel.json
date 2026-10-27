@@ -1,5 +1,12 @@
 {
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
-  "framework": "vite"
+  "buildCommand": null,
+  "outputDirectory": ".",
+  "framework": null,
+  "rewrites": [
+    { "source": "/joki-ml/login.html", "destination": "/index.html?page=login" },
+    { "source": "/joki-ml/order.html", "destination": "/index.html?page=order" },
+    { "source": "/joki-ml/pesanan.html", "destination": "/index.html?page=pesanan" },
+    { "source": "/joki-ml/admin.html", "destination": "/index.html?page=admin" },
+    { "source": "/joki-ml/index.html", "destination": "/index.html" }
+  ]
 }

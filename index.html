@@ -1,16 +1,1576 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="Jasa joki Mobile Legends dengan pilihan paket rank, harga transparan, dan dukungan admin."
-    />
-    <title>JokiByMadss - Jasa Joki Mobile Legends</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+
+<head>
+  <!-- ============================================================
+       META & SEO
+       ============================================================ -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>[JokiByMadss] - Jasa Joki Mobile Legends Profesional</title>
+  <meta name="description"
+    content="Jasa joki Mobile Legends profesional dengan proses cepat, harga transparan, dan layanan terpercaya. Push rank impianmu bersama [JokiByMadss]." />
+  <meta name="keywords"
+    content="joki mobile legends, joki ml, push rank ml, jasa joki ml profesional, joki rank ml terpercaya" />
+  <meta name="robots" content="index, follow" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="[JokiByMadss] - Jasa Joki Mobile Legends Profesional" />
+  <meta property="og:description"
+    content="Jasa joki Mobile Legends profesional dengan proses cepat, harga transparan, dan layanan terpercaya." />
+  <meta property="og:image" content="/joki-ml/assets/a1.jpg" />
+
+  <!-- FONTS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
+
+  <!-- ICONS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- STYLESHEET -->
+  <link rel="stylesheet" href="/joki-ml/css/style.css" />
+  <link rel="stylesheet" href="/joki-ml/css/account.css" />
+</head>
+
+<body>
+  <div id="landingApp">
+
+  <!-- ============================================================
+       LOADING SCREEN
+       ============================================================ -->
+  <div id="loadingScreen" class="loading-screen" aria-live="polite" aria-label="Memuat halaman">
+    <div class="loading-screen__inner">
+      <div class="loading-logo">
+        <span class="loading-logo__icon"><i class="fas fa-bolt"></i></span>
+        <span class="loading-logo__text">[JokiByMadss]</span>
+      </div>
+      <div class="loading-bar-wrap" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <div class="loading-bar" id="loadingBar"></div>
+      </div>
+      <p class="loading-text" id="loadingText">Memuat...</p>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       SCROLL PROGRESS BAR
+       ============================================================ -->
+  <div id="scrollProgress" class="scroll-progress" role="progressbar" aria-label="Progress scroll halaman"></div>
+
+  <!-- ============================================================
+       LIVE NOTIFICATION TOAST
+       ============================================================ -->
+  <div id="toastContainer" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- ============================================================
+       FLOATING WHATSAPP BUTTON
+       ============================================================ -->
+  <a href="#" id="floatingWA" class="floating-wa" onclick="orderViaWhatsApp(); return false;"
+    aria-label="Chat WhatsApp sekarang" title="Chat kami di WhatsApp">
+    <i class="fab fa-whatsapp" aria-hidden="true"></i>
+    <span class="floating-wa__label">Chat Sekarang</span>
+    <span class="floating-wa__ping" aria-hidden="true"></span>
+  </a>
+
+  <!-- ============================================================
+       BACK TO TOP BUTTON
+       ============================================================ -->
+  <button id="backToTop" class="back-to-top" aria-label="Kembali ke atas">
+    <i class="fas fa-chevron-up"></i>
+  </button>
+
+  <!-- ============================================================
+       PROMO BANNER
+       ============================================================ -->
+  <div id="promoBanner" class="promo-banner" role="banner" aria-label="Penawaran spesial">
+    <div class="promo-banner__inner">
+      <i class="fas fa-bolt" aria-hidden="true"></i>
+      <span>
+        <strong>PROMO TERBATAS!</strong> Dapatkan diskon khusus untuk order pertama kamu.
+        <a href="#" onclick="orderViaWhatsApp('Promo Order Pertama'); return false;">
+          Klaim Sekarang <i class="fas fa-arrow-right"></i>
+        </a>
+      </span>
+    </div>
+    <button class="promo-banner__close" id="promoBannerClose" aria-label="Tutup banner promo">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+
+  <!-- ============================================================
+       NAVBAR
+       ============================================================ -->
+  <header class="navbar" id="navbar" role="banner">
+    <div class="container navbar__inner">
+
+      <a href="#home" class="navbar__logo" aria-label="[JokiByMadss] - Halaman Utama">
+        <span class="navbar__logo-icon"><i class="fas fa-bolt"></i></span>
+        <span class="navbar__logo-text">[JokiByMadss]</span>
+      </a>
+
+      <nav class="navbar__nav" role="navigation" aria-label="Navigasi utama">
+        <ul class="navbar__menu" role="list">
+          <li><a href="#home" class="navbar__link" data-nav="home">Home</a></li>
+          <li><a href="#layanan" class="navbar__link" data-nav="layanan">Layanan</a></li>
+          <li><a href="#harga" class="navbar__link" data-nav="harga">Harga</a></li>
+          <li><a href="#kalkulator" class="navbar__link" data-nav="kalkulator">Kalkulator</a></li>
+          <li><a href="#keunggulan" class="navbar__link" data-nav="keunggulan">Keunggulan</a></li>
+          <li><a href="#faq" class="navbar__link" data-nav="faq">FAQ</a></li>
+          <li><a href="/index.html?page=login" class="navbar__link">Masuk</a></li>
+          <li><a href="/index.html?page=order" class="navbar__link">Order</a></li>
+          <li><a href="/index.html?page=pesanan" class="navbar__link">Pesanan</a></li>
+          <li><a href="/index.html?page=admin" class="navbar__link">Admin</a></li>
+        </ul>
+      </nav>
+
+      <a href="#" class="btn btn--gold navbar__cta" onclick="orderViaWhatsApp(); return false;"
+        aria-label="Order joki sekarang via WhatsApp">
+        <i class="fab fa-whatsapp"></i> Joki Sekarang
+      </a>
+
+      <button class="navbar__hamburger" id="hamburger" aria-label="Buka menu navigasi" aria-expanded="false"
+        aria-controls="mobileMenu">
+        <span class="hamburger__line"></span>
+        <span class="hamburger__line"></span>
+        <span class="hamburger__line"></span>
+      </button>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div class="navbar__mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Menu navigasi mobile">
+      <ul class="navbar__mobile-list" role="list">
+        <li><a href="#home" class="navbar__mobile-link">Home</a></li>
+        <li><a href="#layanan" class="navbar__mobile-link">Layanan</a></li>
+        <li><a href="#harga" class="navbar__mobile-link">Harga</a></li>
+        <li><a href="#kalkulator" class="navbar__mobile-link">Kalkulator</a></li>
+        <li><a href="#keunggulan" class="navbar__mobile-link">Keunggulan</a></li>
+        <li><a href="#faq" class="navbar__mobile-link">FAQ</a></li>
+        <li><a href="/index.html?page=login" class="navbar__mobile-link">Masuk</a></li>
+        <li><a href="/index.html?page=order" class="navbar__mobile-link">Buat Pesanan</a></li>
+        <li><a href="/index.html?page=pesanan" class="navbar__mobile-link">Pesanan Saya</a></li>
+        <li><a href="/index.html?page=admin" class="navbar__mobile-link">Admin</a></li>
+      </ul>
+      <a href="#" class="btn btn--gold btn--full-mobile mt-1" onclick="orderViaWhatsApp(); return false;"
+        aria-label="Order joki sekarang via WhatsApp">
+        <i class="fab fa-whatsapp"></i> Joki Sekarang
+      </a>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ============================================================
+         HERO SECTION
+         ============================================================ -->
+    <section class="hero" id="home" aria-labelledby="heroHeading">
+
+      <!-- Canvas particle background -->
+      <canvas id="heroCanvas" class="hero__canvas" aria-hidden="true"></canvas>
+
+      <div class="hero__bg" aria-hidden="true">
+        <div class="hero__glow hero__glow--left"></div>
+        <div class="hero__glow hero__glow--right"></div>
+      </div>
+
+      <div class="container hero__inner">
+
+        <!-- Left content -->
+        <div class="hero__content" data-reveal>
+          <div class="hero__badge">
+            <span class="hero__badge-dot" aria-hidden="true"></span>
+            JOKI MOBILE LEGENDS TERPERCAYA
+          </div>
+
+          <h1 class="hero__heading" id="heroHeading">
+            Push Rank<br />
+            <span class="text-gradient-gold">Jadi Lebih</span><br />
+            <span class="hero__typewriter" id="heroTypewriter" aria-live="polite"></span>
+          </h1>
+
+          <p class="hero__sub">
+            Jasa joki Mobile Legends profesional, aman, cepat, dan siap membantu
+            kamu mencapai rank impian.
+          </p>
+
+          <div class="hero__actions">
+            <a href="#" class="btn btn--gold btn--lg" onclick="orderViaWhatsApp(); return false;"
+              aria-label="Order joki sekarang via WhatsApp">
+              <i class="fab fa-whatsapp"></i> Joki Sekarang
+            </a>
+            <a href="#kalkulator" class="btn btn--outline btn--lg">
+              <i class="fas fa-calculator"></i> Hitung Harga
+            </a>
+          </div>
+
+          <ul class="hero__checks" aria-label="Keunggulan singkat">
+            <li><i class="fas fa-check-circle" aria-hidden="true"></i> Proses cepat</li>
+            <li><i class="fas fa-check-circle" aria-hidden="true"></i> Harga transparan</li>
+            <li><i class="fas fa-check-circle" aria-hidden="true"></i> Bisa request target rank</li>
+          </ul>
+        </div>
+
+        <!-- Right visual -->
+        <div class="hero__visual">
+          <div class="hero__img-wrapper">
+            <!-- ⚡ Ganti src dengan gambar hero kamu -->
+            <div class="hslider" id="heroSlider" aria-label="Slider testimoni">
+  <div class="hslider__track">
+
+    <div class="hslide is-active">
+      <img src="/joki-ml/assets/a1.jpg" alt="Testimoni customer" loading="lazy" />
+    </div>
+
+    <div class="hslide">
+      <img src="/joki-ml/assets/a1.jpg" alt="Testimoni customer 1" loading="lazy" />
+    </div>
+
+    <div class="hslide">
+      <img src="/joki-ml/assets/a1.jpg" alt="Testimoni customer 2" loading="lazy" />
+    </div>
+
+    <div class="hslide">
+      <img src="/joki-ml/assets/a1.jpg" alt="Testimoni customer 3" loading="lazy" />
+    </div>
+
+  </div>
+
+  <button class="hslider__btn hslider__btn--prev" id="hsPrev" aria-label="Sebelumnya">
+    <i class="fas fa-chevron-left"></i>
+  </button>
+  <button class="hslider__btn hslider__btn--next" id="hsNext" aria-label="Berikutnya">
+    <i class="fas fa-chevron-right"></i>
+  </button>
+  <div class="hslider__dots" id="hsDots"></div>
+</div>
+            <div class="hero__img-ring hero__img-ring--1"></div>
+            <div class="hero__img-ring hero__img-ring--2"></div>
+            <div class="hero__img-glow"></div>
+          </div>
+
+          <div class="hero__float hero__float--1">
+            <i class="fas fa-star"></i>
+            <span>Mythic 100&#9733;</span>
+          </div>
+          <div class="hero__float hero__float--2">
+            <i class="fas fa-chart-line"></i>
+            <span>Win Rate 92%</span>
+          </div>
+          <div class="hero__float hero__float--3">
+            <i class="fas fa-check"></i>
+            <span>Order #1024 Selesai</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Scroll indicator -->
+      <div class="hero__scroll-indicator" aria-hidden="true">
+        <div class="hero__scroll-mouse">
+          <div class="hero__scroll-wheel"></div>
+        </div>
+        <span>Scroll</span>
+      </div>
+
+    </section>
+
+    <!-- ============================================================
+         TRUST / STATISTIC SECTION
+         ============================================================ -->
+    <section class="stats" id="stats" aria-labelledby="statsHeading">
+      <div class="container">
+        <h2 id="statsHeading" class="sr-only">Statistik Layanan</h2>
+        <div class="stats__grid">
+
+          <div class="stats__item" data-reveal>
+            <div class="stats__icon" aria-hidden="true"><i class="fas fa-trophy"></i></div>
+            <div class="stats__value">
+              <span class="counter" data-target="1000" data-suffix="+">0</span>
+            </div>
+            <p class="stats__label">Order Selesai</p>
+          </div>
+
+          <div class="stats__item" data-reveal data-delay="100">
+            <div class="stats__icon" aria-hidden="true"><i class="fas fa-face-smile"></i></div>
+            <div class="stats__value">
+              <span class="counter" data-target="98" data-suffix="%">0</span>
+            </div>
+            <p class="stats__label">Customer Puas</p>
+          </div>
+
+          <div class="stats__item" data-reveal data-delay="200">
+            <div class="stats__icon" aria-hidden="true"><i class="fas fa-headset"></i></div>
+            <div class="stats__value">24/7</div>
+            <p class="stats__label">Layanan Aktif</p>
+          </div>
+
+          <div class="stats__item" data-reveal data-delay="300">
+            <div class="stats__icon" aria-hidden="true"><i class="fas fa-crown"></i></div>
+            <div class="stats__value">
+              <span class="counter" data-target="50" data-suffix="+">0</span>
+            </div>
+            <p class="stats__label">Top Rank Player</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         LAYANAN SECTION
+         ============================================================ -->
+    <section class="services" id="layanan" aria-labelledby="layananHeading">
+  <div class="container">
+
+    <div class="section-header" data-reveal>
+      <span class="section-tag">LAYANAN KAMI</span>
+      <h2 class="section-title" id="layananHeading">
+        Layanan Joki <span class="text-gradient-gold">Mobile Legends</span>
+      </h2>
+      <p class="section-sub">Pilihan layanan untuk membantu kamu mencapai target rank.</p>
+    </div>
+
+    <div class="services__grid">
+
+      <article class="service-card glass" data-reveal data-delay="0">
+        <div class="service-card__icon"><i class="fas fa-trophy"></i></div>
+        <h3 class="service-card__title">Joki Rank</h3>
+        <p class="service-card__desc">Push rank dari posisi saat ini menuju target rank yang kamu inginkan dengan
+          cepat dan aman.</p>
+        <ul class="service-card__features">
+          <li><i class="fas fa-check" aria-hidden="true"></i> Mulai dari Warrior</li>
+          <li><i class="fas fa-check" aria-hidden="true"></i> Hingga Mythic Glory</li>
+          <li><i class="fas fa-check" aria-hidden="true"></i> Update progress real-time</li>
+        </ul>
+        <div class="service-card__price">
+          <span class="service-card__price-label">Mulai dari</span>
+          <span class="service-card__price-value">Rp 5.000</span>
+          <span class="service-card__price-unit">/ bintang</span>
+        </div>
+        <a href="#" class="btn btn--cyan btn--sm" onclick="orderViaWhatsApp('Joki Rank'); return false;"
+          aria-label="Pesan Joki Rank">
+          Pesan Sekarang <i class="fas fa-arrow-right"></i>
+        </a>
+      </article>
+
+      <article class="service-card glass" data-reveal data-delay="100">
+        <div class="service-card__icon"><i class="fas fa-star"></i></div>
+        <h3 class="service-card__title">Joki Star</h3>
+        <p class="service-card__desc">Tambah jumlah star sesuai kebutuhan tanpa harus naik tier. Cocok untuk kamu
+          yang stuck di star tertentu.</p>
+        <ul class="service-card__features">
+          <li><i class="fas fa-check" aria-hidden="true"></i> Tambah per-star</li>
+          <li><i class="fas fa-check" aria-hidden="true"></i> Fleksibel &amp; cepat</li>
+          <li><i class="fas fa-check" aria-hidden="true"></i> Harga per-star</li>
+        </ul>
+        <div class="service-card__price">
+          <span class="service-card__price-label">Mulai dari</span>
+          <span class="service-card__price-value">Rp 7.000</span>
+          <span class="service-card__price-unit">/ star</span>
+        </div>
+        <a href="#" class="btn btn--cyan btn--sm" onclick="orderViaWhatsApp('Joki Star'); return false;"
+          aria-label="Pesan Joki Star">
+          Pesan Sekarang <i class="fas fa-arrow-right"></i>
+        </a>
+      </article>
+
+      <article class="service-card glass" data-reveal data-delay="200">
+        <div class="service-card__icon"><i class="fas fa-chart-line"></i></div>
+        <h3 class="service-card__title">Joki Winrate</h3>
+        <p class="service-card__desc">Tingkatkan win rate akun kamu agar terlihat lebih profesional dan meningkat
+          kepercayaan diri.</p>
+        <ul class="service-card__features">
+          <li><i class="fas fa-check" aria-hidden="true"></i> Target WR custom</li>
+          <li><i class="fas fa-check" aria-hidden="true"></i> Pakai hero pilihanmu</li>
+          <li><i class="fas fa-check" aria-hidden="true"></i> Aman &amp; terjamin</li>
+        </ul>
+        <div class="service-card__price">
+          <span class="service-card__price-label">Mulai dari</span>
+          <span class="service-card__price-value">Rp 30.000</span>
+          <span class="service-card__price-unit">/ paket</span>
+        </div>
+        <a href="#" class="btn btn--cyan btn--sm" onclick="orderViaWhatsApp('Joki Winrate'); return false;"
+          aria-label="Pesan Joki Winrate">
+          Pesan Sekarang <i class="fas fa-arrow-right"></i>
+        </a>
+      </article>
+
+      <article class="service-card glass" data-reveal data-delay="300">
+        <div class="service-card__icon"><i class="fas fa-calendar-star"></i></div>
+        <h3 class="service-card__title">Joki Event</h3>
+        <p class="service-card__desc">Bantuan menyelesaikan event tertentu untuk mendapatkan reward eksklusif yang
+          sulit dicapai.</p>
+        <ul class="service-card__features">
+          <li><i class="fas fa-check" aria-hidden="true"></i> Semua event aktif</li>
+          <li><i class="fas fa-check" aria-hidden="true"></i> Reward terjamin</li>
+          <li><i class="fas fa-check" aria-hidden="true"></i> Proses efisien</li>
+        </ul>
+        <div class="service-card__price">
+          <span class="service-card__price-label">Mulai dari</span>
+          <span class="service-card__price-value">Rp 20.000</span>
+          <span class="service-card__price-unit">/ event</span>
+        </div>
+        <a href="#" class="btn btn--cyan btn--sm" onclick="orderViaWhatsApp('Joki Event'); return false;"
+          aria-label="Pesan Joki Event">
+          Pesan Sekarang <i class="fas fa-arrow-right"></i>
+        </a>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+    <!-- ============================================================
+         HARGA / PRICING SECTION
+         ============================================================ -->
+    <section class="pricing" id="harga" aria-labelledby="hargaHeading">
+      <div class="container">
+
+        <div class="section-header" data-reveal>
+          <span class="section-tag">TRANSPARAN &amp; TERJANGKAU</span>
+          <h2 class="section-title" id="hargaHeading">
+            Harga <span class="text-gradient-gold">Joki</span>
+          </h2>
+          <p class="section-sub">Pilih paket yang sesuai dengan kebutuhanmu.</p>
+        </div>
+
+        <!-- Cards dirender oleh JS dari PRICING_DATA -->
+        <div class="pkg-grid" id="pricingPackages">
+
+  <article class="pkg-card glass" data-reveal data-delay="0">
+    <div class="pkg-card__route">
+      <span>Epic</span><i class="fas fa-arrow-right" aria-hidden="true"></i><span>Legend</span>
+    </div>
+    <h3 class="pkg-card__title">Paket Epic ke Legend</h3>
+    <div class="pkg-card__price">Rp 100.000</div>
+    <ul class="pkg-card__features">
+      <li><i class="fas fa-check" aria-hidden="true"></i> Pengerjaan cepat</li>
+      <li><i class="fas fa-check" aria-hidden="true"></i> Update progress</li>
+    </ul>
+    <a href="#" class="btn btn--cyan btn--sm" onclick="orderViaWhatsApp('Paket Epic ke Legend'); return false;">
+      Pesan Paket <i class="fas fa-arrow-right"></i>
+    </a>
+  </article>
+
+  <article class="pkg-card glass" data-reveal data-delay="100">
+    <div class="pkg-card__route">
+      <span>Legend</span><i class="fas fa-arrow-right" aria-hidden="true"></i><span>Mythic</span>
+    </div>
+    <h3 class="pkg-card__title">Paket Legend ke Mythic</h3>
+    <div class="pkg-card__price">Rp 150.000</div>
+    <ul class="pkg-card__features">
+      <li><i class="fas fa-check" aria-hidden="true"></i> Pengerjaan cepat</li>
+      <li><i class="fas fa-check" aria-hidden="true"></i> Update progress</li>
+    </ul>
+    <a href="#" class="btn btn--cyan btn--sm" onclick="orderViaWhatsApp('Paket Legend ke Mythic'); return false;">
+      Pesan Paket <i class="fas fa-arrow-right"></i>
+    </a>
+  </article>
+
+  <article class="pkg-card glass pkg-card--featured" data-reveal data-delay="200">
+    <span class="pkg-card__badge">PALING HEMAT</span>
+    <div class="pkg-card__route">
+      <span>Epic</span><i class="fas fa-arrow-right" aria-hidden="true"></i><span>Mythic Glory</span>
+    </div>
+    <h3 class="pkg-card__title">Paket Epic ke Mythic Glory</h3>
+    <div class="pkg-card__price">Rp 700.000</div>
+    <p class="pkg-card__old">Rp 800.000</p>
+    <ul class="pkg-card__features">
+      <li><i class="fas fa-check" aria-hidden="true"></i> Satu paket sampai target</li>
+      <li><i class="fas fa-check" aria-hidden="true"></i> Update progress real-time</li>
+      <li><i class="fas fa-check" aria-hidden="true"></i> Prioritas pengerjaan</li>
+    </ul>
+    <a href="#" class="btn btn--gold btn--sm" onclick="orderViaWhatsApp('Paket Epic ke Mythic Glory'); return false;">
+      Pesan Paket <i class="fas fa-arrow-right"></i>
+    </a>
+  </article>
+
+  <article class="pkg-card glass" data-reveal data-delay="300">
+    <div class="pkg-card__route">
+      <span>Mythic</span><i class="fas fa-arrow-right" aria-hidden="true"></i><span>Mythical Honor</span>
+    </div>
+    <h3 class="pkg-card__title">Paket Mythic ke Honor</h3>
+    <div class="pkg-card__price">Rp 200.000</div>
+    <ul class="pkg-card__features">
+      <li><i class="fas fa-check" aria-hidden="true"></i> Pengerjaan cepat</li>
+      <li><i class="fas fa-check" aria-hidden="true"></i> Update progress</li>
+    </ul>
+    <a href="#" class="btn btn--cyan btn--sm" onclick="orderViaWhatsApp('Paket Mythic ke Mythical Honor'); return false;">
+      Pesan Paket <i class="fas fa-arrow-right"></i>
+    </a>
+  </article>
+
+  <article class="pkg-card glass" data-reveal data-delay="400">
+    <div class="pkg-card__route">
+      <span>Mythical Honor</span><i class="fas fa-arrow-right" aria-hidden="true"></i><span>Mythic Glory</span>
+    </div>
+    <h3 class="pkg-card__title">Paket Honor ke Glory</h3>
+    <div class="pkg-card__price">Rp 350.000</div>
+    <ul class="pkg-card__features">
+      <li><i class="fas fa-check" aria-hidden="true"></i> Dikerjakan player top</li>
+      <li><i class="fas fa-check" aria-hidden="true"></i> Update progress</li>
+    </ul>
+    <a href="#" class="btn btn--cyan btn--sm" onclick="orderViaWhatsApp('Paket Mythical Honor ke Mythic Glory'); return false;">
+      Pesan Paket <i class="fas fa-arrow-right"></i>
+    </a>
+  </article>
+
+</div>
+
+        <p class="pricing__note" data-reveal>
+          <i class="fas fa-info-circle" aria-hidden="true"></i>
+          Harga dapat berubah berdasarkan target rank, jumlah star, dan tingkat kesulitan.
+          Hubungi kami untuk konsultasi lebih lanjut.
+        </p>
+
+      </div>
+    </section>
+
+    <!-- ============================================================
+         KALKULATOR HARGA SECTION (FITUR BARU)
+         ============================================================ -->
+    <section class="calculator" id="kalkulator" aria-labelledby="kalkulatorHeading">
+      <div class="container">
+
+        <div class="section-header" data-reveal>
+          <span class="section-tag">ESTIMASI HARGA</span>
+          <h2 class="section-title" id="kalkulatorHeading">
+            Kalkulator <span class="text-gradient-cyan">Harga Joki</span>
+          </h2>
+          <p class="section-sub">Pilih rank asal dan target rankmu untuk mendapatkan estimasi harga.</p>
+        </div>
+
+        <div class="calc-card glass" data-reveal>
+          <div class="calc-card__grid">
+
+            <!-- Rank Asal -->
+            <div class="calc-field">
+              <label class="calc-field__label" for="rankFrom">
+                <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
+                Rank Saat Ini
+              </label>
+              <div class="calc-select-wrap">
+                <select id="rankFrom" class="calc-select" aria-label="Pilih rank saat ini">
+                  <option value="">-- Pilih Rank --</option>
+                </select>
+                <i class="fas fa-chevron-down calc-select-icon" aria-hidden="true"></i>
+              </div>
+              <div class="calc-rank-badge" id="rankFromBadge"></div>
+            </div>
+
+            <!-- Arrow -->
+            <div class="calc-arrow" aria-hidden="true">
+              <i class="fas fa-arrow-right"></i>
+            </div>
+
+            <!-- Rank Target -->
+            <div class="calc-field">
+              <label class="calc-field__label" for="rankTo">
+                <i class="fas fa-flag-checkered" aria-hidden="true"></i>
+                Rank Target
+              </label>
+              <div class="calc-select-wrap">
+                <select id="rankTo" class="calc-select" aria-label="Pilih rank target">
+                  <option value="">-- Pilih Target --</option>
+                </select>
+                <i class="fas fa-chevron-down calc-select-icon" aria-hidden="true"></i>
+              </div>
+              <div class="calc-rank-badge" id="rankToBadge"></div>
+            </div>
+
+          </div>
+
+          <!-- Result -->
+          <div class="calc-result" id="calcResult" aria-live="polite">
+            <div class="calc-result__placeholder">
+              <i class="fas fa-calculator" aria-hidden="true"></i>
+              <p>Pilih rank asal &amp; target untuk melihat estimasi harga</p>
+            </div>
+          </div>
+
+          <!-- CTA -->
+          <div class="calc-cta" id="calcCta" style="display:none;">
+            <button class="btn btn--gold btn--lg" id="calcOrderBtn" onclick="orderViaWhatsApp()"
+              aria-label="Order joki sesuai estimasi via WhatsApp">
+              <i class="fab fa-whatsapp"></i> Order Sekarang
+            </button>
+            <p class="calc-cta__note">
+              <i class="fas fa-info-circle" aria-hidden="true"></i>
+              Harga estimasi, konfirmasi final via WhatsApp
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============================================================
+         CARA PEMESANAN
+         ============================================================ -->
+    <section class="how-to" id="cara-order" aria-labelledby="caraOrderHeading">
+      <div class="container">
+
+        <div class="section-header" data-reveal>
+          <span class="section-tag">MUDAH &amp; CEPAT</span>
+          <h2 class="section-title" id="caraOrderHeading">
+            Cara <span class="text-gradient-cyan">Order</span>
+          </h2>
+          <p class="section-sub">Hanya 4 langkah untuk mulai push rank bersama kami.</p>
+        </div>
+
+        <div class="how-to__steps">
+
+          <div class="step-card" data-reveal data-delay="0">
+            <div class="step-card__number">01</div>
+            <div class="step-card__icon"><i class="fas fa-list-check"></i></div>
+            <h3 class="step-card__title">Pilih Layanan</h3>
+            <p class="step-card__desc">Pilih layanan atau gunakan kalkulator harga untuk tahu estimasi biaya.</p>
+          </div>
+
+          <div class="step-card__connector" aria-hidden="true"></div>
+
+          <div class="step-card" data-reveal data-delay="150">
+            <div class="step-card__number">02</div>
+            <div class="step-card__icon"><i class="fab fa-whatsapp"></i></div>
+            <h3 class="step-card__title">Hubungi Admin</h3>
+            <p class="step-card__desc">Kirim detail akun dan target rank ke admin kami via WhatsApp.</p>
+          </div>
+
+          <div class="step-card__connector" aria-hidden="true"></div>
+
+          <div class="step-card" data-reveal data-delay="300">
+            <div class="step-card__number">03</div>
+            <div class="step-card__icon"><i class="fas fa-credit-card"></i></div>
+            <h3 class="step-card__title">Lakukan Pembayaran</h3>
+            <p class="step-card__desc">Bayar sesuai harga disepakati melalui metode pembayaran yang tersedia.</p>
+          </div>
+
+          <div class="step-card__connector" aria-hidden="true"></div>
+
+          <div class="step-card" data-reveal data-delay="450">
+            <div class="step-card__number">04</div>
+            <div class="step-card__icon"><i class="fas fa-rocket"></i></div>
+            <h3 class="step-card__title">Joki Dimulai</h3>
+            <p class="step-card__desc">Tim kami langsung mulai bekerja dan update progress secara berkala.</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         KEUNGGULAN / BENEFITS
+         ============================================================ -->
+    <section class="benefits" id="keunggulan" aria-labelledby="keunggulanHeading">
+      <div class="container">
+
+        <div class="section-header" data-reveal>
+          <span class="section-tag">KENAPA KAMI?</span>
+          <h2 class="section-title" id="keunggulanHeading">
+            Kenapa Pilih <span class="text-gradient-gold">[JokiByMadss]?</span>
+          </h2>
+          <p class="section-sub">Bukan sekadar joki biasa — kami hadir sebagai mitra gaming kamu.</p>
+        </div>
+
+        <div class="benefits__grid">
+
+          <div class="benefit-card glass" data-reveal data-delay="0">
+            <div class="benefit-card__icon"><i class="fas fa-bolt"></i></div>
+            <h3 class="benefit-card__title">Proses Cepat</h3>
+            <p class="benefit-card__desc">Tim kami yang berpengalaman memastikan proses joki berjalan efisien sesuai
+              estimasi waktu.</p>
+          </div>
+
+          <div class="benefit-card glass" data-reveal data-delay="100">
+            <div class="benefit-card__icon"><i class="fas fa-tag"></i></div>
+            <h3 class="benefit-card__title">Harga Transparan</h3>
+            <p class="benefit-card__desc">Tidak ada biaya tersembunyi. Semua harga diinformasikan di awal sebelum proses
+              dimulai.</p>
+          </div>
+
+          <div class="benefit-card glass" data-reveal data-delay="200">
+            <div class="benefit-card__icon"><i class="fas fa-bell"></i></div>
+            <h3 class="benefit-card__title">Update Progress</h3>
+            <p class="benefit-card__desc">Kami selalu memberikan laporan perkembangan secara berkala agar kamu tenang
+              dan terinformasi.</p>
+          </div>
+
+          <div class="benefit-card glass" data-reveal data-delay="300">
+            <div class="benefit-card__icon"><i class="fas fa-sliders"></i></div>
+            <h3 class="benefit-card__title">Bisa Request</h3>
+            <p class="benefit-card__desc">Ingin hero tertentu atau target spesifik? Kami bisa menyesuaikan sesuai
+              permintaanmu.</p>
+          </div>
+
+          <div class="benefit-card glass" data-reveal data-delay="400">
+            <div class="benefit-card__icon"><i class="fas fa-headset"></i></div>
+            <h3 class="benefit-card__title">Customer Support</h3>
+            <p class="benefit-card__desc">Admin kami siap membantu pertanyaan dan kekhawatiranmu kapan pun kamu
+              butuhkan.</p>
+          </div>
+
+          <div class="benefit-card glass" data-reveal data-delay="500">
+            <div class="benefit-card__icon"><i class="fas fa-shield-halved"></i></div>
+            <h3 class="benefit-card__title">Aman &amp; Profesional</h3>
+            <p class="benefit-card__desc">Dikerjakan oleh player berpengalaman dengan pendekatan yang meminimalkan
+              risiko akunmu.</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         TESTIMONIAL SECTION
+         ============================================================ -->
+    <section class="testimonials" id="testimonial" aria-labelledby="testimonialHeading">
+      <div class="container">
+
+        <div class="section-header" data-reveal>
+          <span class="section-tag">APA KATA MEREKA</span>
+          <h2 class="section-title" id="testimonialHeading">
+            Testimoni <span class="text-gradient-cyan">Customer</span>
+          </h2>
+          <p class="section-sub">Ribuan customer sudah mempercayakan rank mereka kepada kami.</p>
+        </div>
+
+        <div class="testimonials__wrapper" data-reveal>
+          <div class="testimonials__track" id="testimonialSlider" role="list">
+
+            <article class="testi-card glass" role="listitem">
+              <div class="testi-card__stars" aria-label="Rating 5 dari 5">
+                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                  class="fas fa-star"></i><i class="fas fa-star"></i>
+              </div>
+              <blockquote class="testi-card__text">
+                "Awalnya ragu karena baru pertama kali joki, ternyata prosesnya cepat dan rank langsung naik. Mantap!
+                Pasti balik lagi buat next season."
+              </blockquote>
+              <div class="testi-card__author">
+                <div class="testi-card__avatar testi-card__avatar--cyan">A</div>
+                <div>
+                  <strong>Andi</strong>
+                  <span>Mythic Player · Jakarta</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="testi-card glass" role="listitem">
+              <div class="testi-card__stars" aria-label="Rating 5 dari 5">
+                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                  class="fas fa-star"></i><i class="fas fa-star"></i>
+              </div>
+              <blockquote class="testi-card__text">
+                "Admin responsif banget, prosesnya sesuai estimasi, dan update progress-nya juga bikin tenang.
+                Recommended 100%!"
+              </blockquote>
+              <div class="testi-card__author">
+                <div class="testi-card__avatar testi-card__avatar--gold">R</div>
+                <div>
+                  <strong>Rizky</strong>
+                  <span>Legend Player · Surabaya</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="testi-card glass" role="listitem">
+              <div class="testi-card__stars" aria-label="Rating 5 dari 5">
+                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                  class="fas fa-star"></i><i class="fas fa-star"></i>
+              </div>
+              <blockquote class="testi-card__text">
+                "Pelayanan bagus, update progress juga jelas. Harganya pun sesuai dan wajar. Udah order 3 kali dan
+                selalu puas."
+              </blockquote>
+              <div class="testi-card__author">
+                <div class="testi-card__avatar testi-card__avatar--purple">F</div>
+                <div>
+                  <strong>Fajar</strong>
+                  <span>Epic Player · Bandung</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="testi-card glass" role="listitem">
+              <div class="testi-card__stars" aria-label="Rating 4 dari 5">
+                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                  class="fas fa-star"></i><i class="far fa-star"></i>
+              </div>
+              <blockquote class="testi-card__text">
+                "Pertama kali coba joki online dan pilih sini. Ternyata memang profesional! Proses jelas dan hasilnya
+                memuaskan."
+              </blockquote>
+              <div class="testi-card__author">
+                <div class="testi-card__avatar testi-card__avatar--cyan">S</div>
+                <div>
+                  <strong>Sinta</strong>
+                  <span>Grandmaster Player · Medan</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="testi-card glass" role="listitem">
+              <div class="testi-card__stars" aria-label="Rating 5 dari 5">
+                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                  class="fas fa-star"></i><i class="fas fa-star"></i>
+              </div>
+              <blockquote class="testi-card__text">
+                "Kalkulator harganya memudahkan banget buat hitung budget. Langsung order dan selesai sesuai estimasi.
+                Top!"
+              </blockquote>
+              <div class="testi-card__author">
+                <div class="testi-card__avatar testi-card__avatar--gold">D</div>
+                <div>
+                  <strong>Dimas</strong>
+                  <span>Mythic Honor Player · Yogyakarta</span>
+                </div>
+              </div>
+            </article>
+
+          </div>
+
+          <!-- Autoplay progress -->
+          <div class="testi-progress" aria-hidden="true">
+            <div class="testi-progress__bar" id="testiProgressBar"></div>
+          </div>
+
+          <!-- Controls -->
+          <div class="testimonials__controls">
+            <button class="testi-btn" id="testiPrev" aria-label="Testimonial sebelumnya">
+              <i class="fas fa-chevron-left"></i>
+            </button>
+            <div class="testi-dots" id="testiDots" role="tablist" aria-label="Pilih testimoni"></div>
+            <button class="testi-btn" id="testiNext" aria-label="Testimonial selanjutnya">
+              <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============================================================
+         FAQ SECTION
+         ============================================================ -->
+    <section class="faq" id="faq" aria-labelledby="faqHeading">
+      <div class="container">
+
+        <div class="section-header" data-reveal>
+          <span class="section-tag">PERTANYAAN UMUM</span>
+          <h2 class="section-title" id="faqHeading">
+            FAQ <span class="text-gradient-gold">Tanya Jawab</span>
+          </h2>
+          <p class="section-sub">Punya pertanyaan? Temukan jawabannya di sini.</p>
+        </div>
+
+        <div class="faq__list" id="faqList" data-reveal>
+
+          <div class="faq__item">
+            <button class="faq__question" aria-expanded="false" aria-controls="faqA1" id="faqQ1">
+              <span>Apakah akun saya aman?</span>
+              <span class="faq__icon" aria-hidden="true"><i class="fas fa-chevron-down"></i></span>
+            </button>
+            <div class="faq__answer" id="faqA1" role="region" aria-labelledby="faqQ1">
+              <p>Keamanan akun adalah prioritas kami. Tim kami bekerja secara profesional dan berhati-hati. Kami
+                menyarankan kamu untuk tidak mengungkapkan informasi sensitif yang tidak diperlukan. Risiko penggunaan
+                jasa joki tetap ada dan menjadi tanggung jawab bersama.</p>
+            </div>
+          </div>
+
+          <div class="faq__item">
+            <button class="faq__question" aria-expanded="false" aria-controls="faqA2" id="faqQ2">
+              <span>Berapa lama proses joki?</span>
+              <span class="faq__icon" aria-hidden="true"><i class="fas fa-chevron-down"></i></span>
+            </button>
+            <div class="faq__answer" id="faqA2" role="region" aria-labelledby="faqQ2">
+              <p>Durasi proses bervariasi tergantung tier saat ini, target rank, dan jadwal ketersediaan tim. Estimasi
+                waktu akan kami informasikan sebelum proses dimulai. Kami tidak dapat menjamin waktu pasti karena
+                bergantung kondisi matchmaking.</p>
+            </div>
+          </div>
+
+          <div class="faq__item">
+            <button class="faq__question" aria-expanded="false" aria-controls="faqA3" id="faqQ3">
+              <span>Bagaimana cara melakukan order?</span>
+              <span class="faq__icon" aria-hidden="true"><i class="fas fa-chevron-down"></i></span>
+            </button>
+            <div class="faq__answer" id="faqA3" role="region" aria-labelledby="faqQ3">
+              <p>Sangat mudah! Gunakan kalkulator harga untuk estimasi biaya, klik tombol "Joki Sekarang", dan kamu akan
+                diarahkan ke WhatsApp kami. Diskusikan detail order dengan admin, lakukan pembayaran, dan proses joki
+                dimulai.</p>
+            </div>
+          </div>
+
+          <div class="faq__item">
+            <button class="faq__question" aria-expanded="false" aria-controls="faqA4" id="faqQ4">
+              <span>Apakah bisa request target rank tertentu?</span>
+              <span class="faq__icon" aria-hidden="true"><i class="fas fa-chevron-down"></i></span>
+            </button>
+            <div class="faq__answer" id="faqA4" role="region" aria-labelledby="faqQ4">
+              <p>Ya! Kamu bisa request target rank tertentu, misalnya Mythic, Mythic Honor, atau jumlah star tertentu.
+                Sampaikan kebutuhanmu saat menghubungi admin dan kami akan memberikan estimasi harga yang sesuai.</p>
+            </div>
+          </div>
+
+          <div class="faq__item">
+            <button class="faq__question" aria-expanded="false" aria-controls="faqA5" id="faqQ5">
+              <span>Apakah tersedia layanan selain push rank?</span>
+              <span class="faq__icon" aria-hidden="true"><i class="fas fa-chevron-down"></i></span>
+            </button>
+            <div class="faq__answer" id="faqA5" role="region" aria-labelledby="faqQ5">
+              <p>Tentu! Kami menyediakan berbagai layanan: Joki Star, Joki Winrate, Joki Placement Match, Joki Event,
+                dan Custom Request. Kunjungi bagian Layanan untuk melihat detail lengkapnya.</p>
+            </div>
+          </div>
+
+          <div class="faq__item">
+            <button class="faq__question" aria-expanded="false" aria-controls="faqA6" id="faqQ6">
+              <span>Bagaimana jika proses joki mengalami kendala?</span>
+              <span class="faq__icon" aria-hidden="true"><i class="fas fa-chevron-down"></i></span>
+            </button>
+            <div class="faq__answer" id="faqA6" role="region" aria-labelledby="faqQ6">
+              <p>Jika terjadi kendala teknis seperti bug game atau maintenance server, proses akan dilanjutkan setelah
+                kondisi memungkinkan. Admin kami akan selalu menginformasikan situasi terkini dan berupaya menyelesaikan
+                order sesuai kesepakatan.</p>
+            </div>
+          </div>
+
+          <div class="faq__item">
+            <button class="faq__question" aria-expanded="false" aria-controls="faqA7" id="faqQ7">
+              <span>Metode pembayaran apa yang tersedia?</span>
+              <span class="faq__icon" aria-hidden="true"><i class="fas fa-chevron-down"></i></span>
+            </button>
+            <div class="faq__answer" id="faqA7" role="region" aria-labelledby="faqQ7">
+              <p>Kami menerima berbagai metode pembayaran termasuk transfer bank, dompet digital (GoPay, OVO, DANA), dan
+                QRIS. Detail metode pembayaran akan diinformasikan admin saat proses order.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         CTA SECTION
+         ============================================================ -->
+    <section class="cta" id="cta" aria-labelledby="ctaHeading">
+      <div class="cta__bg" aria-hidden="true">
+        <div class="cta__glow cta__glow--1"></div>
+        <div class="cta__glow cta__glow--2"></div>
+        <div class="cta__grid-lines"></div>
+      </div>
+      <div class="container">
+        <div class="cta__inner" data-reveal>
+          <span class="section-tag">MULAI SEKARANG</span>
+          <h2 class="cta__heading" id="ctaHeading">
+            Siap <span class="text-gradient-gold">Push Rank?</span>
+          </h2>
+          <p class="cta__sub">
+            Jangan biarkan rank impian cuma jadi target. Mulai order joki sekarang dan rasakan perbedaannya.
+          </p>
+          <div class="cta__actions">
+            <a href="#" class="btn btn--gold btn--xl" onclick="orderViaWhatsApp(); return false;"
+              aria-label="Order joki Mobile Legends sekarang via WhatsApp">
+              <i class="fab fa-whatsapp"></i> Joki Sekarang
+            </a>
+            <a href="#kalkulator" class="btn btn--outline btn--xl">
+              <i class="fas fa-calculator"></i> Hitung Dulu
+            </a>
+          </div>
+          <div class="cta__trust">
+            <span><i class="fas fa-shield-halved" aria-hidden="true"></i> Aman</span>
+            <span><i class="fas fa-bolt" aria-hidden="true"></i> Cepat</span>
+            <span><i class="fas fa-star" aria-hidden="true"></i> Terpercaya</span>
+            <span><i class="fas fa-headset" aria-hidden="true"></i> 24/7 Support</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================================
+       FOOTER
+       ============================================================ -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer__inner">
+
+        <div class="footer__brand">
+          <a href="#home" class="navbar__logo footer__logo" aria-label="[JokiByMadss]">
+            <span class="navbar__logo-icon"><i class="fas fa-bolt"></i></span>
+            <span class="navbar__logo-text">[JokiByMadss]</span>
+          </a>
+          <p class="footer__tagline">Jasa Joki Mobile Legends Profesional</p>
+          <p class="footer__desc">
+            Layanan joki Mobile Legends terpercaya dengan proses cepat, harga transparan, dan dukungan penuh dari tim
+            profesional kami.
+          </p>
+          <div class="footer__socials">
+            <a href="#" class="footer__social-btn" aria-label="Instagram [JokiByMadss]" rel="noopener noreferrer">
+              <i class="fab fa-instagram"></i>
+            </a>
+            <a href="#" class="footer__social-btn" aria-label="TikTok [JokiByMadss]" rel="noopener noreferrer">
+              <i class="fab fa-tiktok"></i>
+            </a>
+            <a href="#" class="footer__social-btn footer__social-btn--wa" aria-label="WhatsApp [JokiByMadss]"
+              onclick="orderViaWhatsApp(); return false;">
+              <i class="fab fa-whatsapp"></i>
+            </a>
+          </div>
+        </div>
+
+        <nav class="footer__nav" aria-label="Navigasi footer">
+          <h3 class="footer__nav-title">Navigasi</h3>
+          <ul role="list">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#layanan">Layanan</a></li>
+            <li><a href="#harga">Harga</a></li>
+            <li><a href="#kalkulator">Kalkulator</a></li>
+            <li><a href="#faq">FAQ</a></li>
+            <li><a href="#" onclick="orderViaWhatsApp(); return false;">Kontak</a></li>
+          </ul>
+        </nav>
+
+        <nav class="footer__nav" aria-label="Layanan footer">
+          <h3 class="footer__nav-title">Layanan</h3>
+          <ul role="list">
+            <li><a href="#" onclick="orderViaWhatsApp('Joki Rank'); return false;">Joki Rank</a></li>
+            <li><a href="#" onclick="orderViaWhatsApp('Joki Star'); return false;">Joki Star</a></li>
+            <li><a href="#" onclick="orderViaWhatsApp('Joki Winrate'); return false;">Joki Winrate</a></li>
+            <li><a href="#" onclick="orderViaWhatsApp('Joki Placement'); return false;">Joki Placement</a></li>
+            <li><a href="#" onclick="orderViaWhatsApp('Joki Event'); return false;">Joki Event</a></li>
+            <li><a href="#" onclick="orderViaWhatsApp('Custom Request'); return false;">Custom Request</a></li>
+          </ul>
+        </nav>
+
+        <div class="footer__contact">
+          <h3 class="footer__nav-title">Kontak</h3>
+          <ul role="list">
+            <li>
+              <a href="#" onclick="orderViaWhatsApp(); return false;" class="footer__contact-item">
+                <i class="fab fa-whatsapp" aria-hidden="true"></i>
+                <span>Chat via WhatsApp</span>
+              </a>
+            </li>
+            <li>
+              <span class="footer__contact-item">
+                <i class="fas fa-clock" aria-hidden="true"></i>
+                <span>24/7 — Selalu Online</span>
+              </span>
+            </li>
+            <li>
+              <span class="footer__contact-item">
+                <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
+                <span>Indonesia</span>
+              </span>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="footer__bottom">
+        <p class="footer__copy">&copy; 2026 [JokiByMadss]. All rights reserved.</p>
+        <p class="footer__disclaimer">
+          Mobile Legends: Bang Bang adalah merek dagang dari Moonton.
+          Website ini merupakan layanan independen dan tidak berafiliasi dengan Moonton.
+        </p>
+      </div>
+
+    </div>
+  </footer>
+  </div>
+
+  <!-- ============================================================
+       ACCOUNT PAGES
+       ============================================================ -->
+  <div id="accountApp" hidden>
+    <header class="account-header">
+      <a class="account-brand" href="/index.html">JokiByMadss</a>
+      <nav class="account-nav" aria-label="Navigasi akun">
+        <a href="/index.html?page=order">Buat pesanan</a>
+        <a href="/index.html?page=pesanan">Pesanan saya</a>
+        <a href="/index.html">Beranda</a>
+        <a href="#" id="out" hidden>Keluar</a>
+      </nav>
+    </header>
+    <main class="account-main account-main--center">
+      <section
+        id="loginView"
+        class="account-view account-card account-card--login"
+        aria-labelledby="loginTitle"
+        hidden
+      >
+        <p class="account-eyebrow">AKUN JOKIBYMADSS</p>
+        <h1 id="loginTitle">Masuk</h1>
+        <p class="account-intro">Masuk untuk membuat dan memantau pesananmu.</p>
+        <form id="loginForm">
+          <label class="account-label" for="email">Email</label>
+          <input class="account-input" id="email" name="email" type="email" autocomplete="email" required />
+          <label class="account-label" for="pass">Kata sandi</label>
+          <input
+            class="account-input"
+            id="pass"
+            name="password"
+            type="password"
+            autocomplete="current-password"
+            required
+            minlength="6"
+          />
+          <p id="loginMsg" class="account-message" role="status" aria-live="polite"></p>
+          <button class="btn btn--gold btn--md account-submit" id="go" type="submit">Masuk</button>
+        </form>
+        <a class="account-switch" href="#" id="switch">Belum punya akun? Daftar</a>
+      </section>
+
+      <section
+        id="orderView"
+        class="account-view account-card account-card--login"
+        aria-labelledby="orderTitle"
+        hidden
+      >
+        <p class="account-eyebrow">FORMULIR PESANAN</p>
+        <h1 id="orderTitle">Detail Pesanan</h1>
+        <p class="account-intro">Pastikan data akun game yang kamu masukkan benar.</p>
+        <div id="ringkas" class="account-summary" aria-live="polite"></div>
+        <form id="orderForm">
+          <label class="account-label" for="nick">Nickname game</label>
+          <input class="account-input" id="nick" name="nickname" autocomplete="nickname" maxlength="80" required />
+          <label class="account-label" for="gid">ID / Server</label>
+          <input class="account-input" id="gid" name="gameId" maxlength="80" required />
+          <label class="account-label" for="via">Login melalui</label>
+          <select class="account-input" id="via" name="loginVia" required>
+            <option value="Moonton">Moonton</option>
+            <option value="Facebook">Facebook</option>
+            <option value="Google">Google</option>
+            <option value="VK">VK</option>
+          </select>
+          <label class="account-label" for="bayar">Metode pembayaran</label>
+          <select class="account-input" id="bayar" name="payment" required>
+            <option value="Transfer Bank">Transfer Bank</option>
+            <option value="E-Wallet">E-Wallet</option>
+            <option value="QRIS">QRIS</option>
+          </select>
+          <label class="account-label" for="note">Catatan tambahan <span>(opsional)</span></label>
+          <textarea class="account-input account-textarea" id="note" name="note" rows="3" maxlength="500"></textarea>
+          <p id="orderMsg" class="account-message" role="status" aria-live="polite"></p>
+          <button class="btn btn--gold btn--md account-submit" id="kirim" type="submit">Kirim Pesanan</button>
+        </form>
+      </section>
+
+      <section
+        id="ordersView"
+        class="account-view account-card account-card--wide"
+        aria-labelledby="ordersTitle"
+        hidden
+      >
+        <p class="account-eyebrow">AKUN SAYA</p>
+        <h1 id="ordersTitle">Pesanan Saya</h1>
+        <p class="account-intro">Periksa pembayaran dan perkembangan setiap pesananmu.</p>
+        <p id="ordersMsg" class="account-message" role="status" aria-live="polite"></p>
+        <div class="account-table-wrap">
+          <table class="account-table">
+            <thead>
+              <tr>
+                <th scope="col">Tanggal</th>
+                <th scope="col">Layanan</th>
+                <th scope="col">Harga</th>
+                <th scope="col">Pembayaran</th>
+                <th scope="col">Status</th>
+              </tr>
+            </thead>
+            <tbody id="orderRows">
+              <tr><td colspan="5" class="account-empty">Memuat pesanan...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section
+        id="adminView"
+        class="account-view account-card account-card--wide"
+        aria-labelledby="adminTitle"
+        hidden
+      >
+        <p class="account-eyebrow">PANEL ADMIN</p>
+        <h1 id="adminTitle">Kelola Pesanan</h1>
+        <p class="account-intro">Lihat pesanan terbaru dan perbarui status pengerjaannya.</p>
+        <p id="total" class="account-count" aria-live="polite">Memuat pesanan...</p>
+        <p id="adminMsg" class="account-message" role="status" aria-live="polite"></p>
+        <div class="account-table-wrap">
+          <table class="account-table">
+            <thead>
+              <tr>
+                <th scope="col">Tanggal</th>
+                <th scope="col">Email</th>
+                <th scope="col">Layanan</th>
+                <th scope="col">Harga</th>
+                <th scope="col">Data akun</th>
+                <th scope="col">Pembayaran</th>
+                <th scope="col">Catatan</th>
+                <th scope="col">Status</th>
+              </tr>
+            </thead>
+            <tbody id="adminRows">
+              <tr><td colspan="8" class="account-empty">Memuat pesanan...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const accountRoutes = ["/joki-ml/login.html", "/joki-ml/order.html", "/joki-ml/pesanan.html", "/joki-ml/admin.html"];
+    const isAccountRoute = new URLSearchParams(location.search).has("page") ||
+      accountRoutes.includes(location.pathname.toLowerCase());
+    if (!isAccountRoute) {
+      document.write([
+        "/joki-ml/js/script.js",
+        "/joki-ml/js/calculator.js",
+        "/joki-ml/js/whatsapp.js",
+        "/joki-ml/js/hero-slider.js"
+      ].map(source => `<script type="module" src="${source}"><\/script>`).join(""));
+    }
+  </script>
+  <script type="module">
+    const ADMIN_EMAIL = "imadeyudha26@gmail.com";
+    const SUPABASE_URL = "https://vywwuidfiudipupquasw.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_jP7b5v10Amd_0-USiAg92g_azM5nC_K";
+    const STATUS = ["Menunggu Pembayaran", "Dibayar", "Sedang Dikerjakan", "Selesai", "Dibatalkan"];
+    const params = new URLSearchParams(location.search);
+    const legacyRoutes = {
+      "/joki-ml/login.html": "login",
+      "/joki-ml/order.html": "order",
+      "/joki-ml/pesanan.html": "pesanan",
+      "/joki-ml/admin.html": "admin"
+    };
+    const page = params.get("page") || legacyRoutes[location.pathname.toLowerCase()] || "home";
+    const accountViews = {
+      login: "loginView",
+      order: "orderView",
+      pesanan: "ordersView",
+      admin: "adminView"
+    };
+
+    function routeUrl(destination, query = {}) {
+      const target = new URL("/index.html", location.origin);
+      target.searchParams.set("page", destination);
+      Object.entries(query).forEach(([key, value]) => target.searchParams.set(key, value));
+      return target.pathname + target.search;
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "").replace(/[&<>"']/g, character => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      }[character]));
+    }
+
+    function formatRupiah(value) {
+      return "Rp " + Number(value || 0).toLocaleString("id-ID");
+    }
+
+    function setMessage(id, message) {
+      document.getElementById(id).textContent = message;
+    }
+
+    async function getSession(supabase) {
+      const { data, error } = await supabase.auth.getSession();
+      if (error) throw error;
+      return data.session;
+    }
+
+    function showAccountView() {
+      document.getElementById("landingApp").hidden = true;
+      document.getElementById("accountApp").hidden = false;
+      document.body.classList.add("account-page");
+
+      document.querySelectorAll(".account-view").forEach(view => {
+        view.hidden = view.id !== accountViews[page];
+      });
+
+      const titles = {
+        admin: "Admin Pesanan",
+        order: "Buat Pesanan",
+        pesanan: "Pesanan Saya",
+        login: "Masuk"
+      };
+      document.title = `${titles[page]} | JokiByMadss`;
+    }
+
+    async function continueAfterLogin(supabase) {
+      const session = await getSession(supabase);
+      const user = session?.user;
+      if (!user) return false;
+
+      const next = params.get("next");
+      let safeNext = routeUrl("pesanan");
+      if (next) {
+        const target = new URL(next, location.origin);
+        const isAllowedPage = ["order", "pesanan"].includes(target.searchParams.get("page"));
+        if (target.origin === location.origin && target.pathname === "/index.html" && isAllowedPage) {
+          safeNext = target.pathname + target.search;
+        }
+      }
+
+      const destination = user.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase()
+        ? routeUrl("admin")
+        : safeNext;
+      location.href = destination;
+      return true;
+    }
+
+    async function initializeLoginPage(supabase, session) {
+      let daftar = false;
+      const form = document.getElementById("loginForm");
+      const button = document.getElementById("go");
+      const password = document.getElementById("pass");
+      const switchLink = document.getElementById("switch");
+
+      switchLink.onclick = event => {
+        event.preventDefault();
+        daftar = !daftar;
+        document.getElementById("loginTitle").textContent = button.textContent = daftar ? "Daftar" : "Masuk";
+        switchLink.textContent = daftar ? "Sudah punya akun? Masuk" : "Belum punya akun? Daftar";
+        password.autocomplete = daftar ? "new-password" : "current-password";
+        setMessage("loginMsg", "");
+      };
+
+      form.onsubmit = async event => {
+        event.preventDefault();
+        setMessage("loginMsg", "");
+        button.disabled = true;
+
+        const credentials = {
+          email: document.getElementById("email").value.trim(),
+          password: password.value
+        };
+        const { error } = daftar
+          ? await supabase.auth.signUp(credentials)
+          : await supabase.auth.signInWithPassword(credentials);
+
+        if (error) {
+          setMessage("loginMsg", "Gagal: " + error.message);
+          button.disabled = false;
+          return;
+        }
+
+        try {
+          const redirected = await continueAfterLogin(supabase);
+          if (!redirected) {
+            setMessage("loginMsg", "Cek email kamu untuk konfirmasi, lalu masuk.");
+            button.disabled = false;
+          }
+        } catch (sessionError) {
+          setMessage("loginMsg", "Gagal memeriksa sesi: " + sessionError.message);
+          button.disabled = false;
+        }
+      };
+
+      if (session?.user) await continueAfterLogin(supabase);
+    }
+
+    function initializeSignOut(supabase) {
+      document.getElementById("out").hidden = false;
+      document.getElementById("out").onclick = async event => {
+        event.preventDefault();
+        const { error } = await supabase.auth.signOut();
+        if (error) {
+          const messageId = page === "admin" ? "adminMsg" : "ordersMsg";
+          setMessage(messageId, "Gagal keluar: " + error.message);
+          return;
+        }
+        location.href = routeUrl("login");
+      };
+    }
+
+    function initializeOrderPage(supabase, session) {
+      const item = (params.get("item") || "").slice(0, 100);
+      const parsedPrice = Number.parseInt(params.get("price") || "", 10);
+      const price = Number.isFinite(parsedPrice) ? Math.max(0, parsedPrice) : 0;
+      const estimate = price ? formatRupiah(price) : "dikonfirmasi admin";
+
+      document.getElementById("ringkas").innerHTML =
+        `<b>${escapeHtml(item || "Layanan")}</b><br>Estimasi: ${estimate}`;
+
+      document.getElementById("orderForm").onsubmit = async event => {
+        event.preventDefault();
+        setMessage("orderMsg", "");
+
+        const nickname = document.getElementById("nick").value.trim();
+        const gameId = document.getElementById("gid").value.trim();
+        if (!nickname || !gameId) {
+          setMessage("orderMsg", "Nickname dan ID wajib diisi.");
+          return;
+        }
+
+        const submit = document.getElementById("kirim");
+        submit.disabled = true;
+        const { error } = await supabase.from("orders").insert({
+          item,
+          price,
+          user_id: session.user.id,
+          email: session.user.email,
+          nick: nickname,
+          game_id: gameId,
+          via: document.getElementById("via").value,
+          bayar: document.getElementById("bayar").value,
+          note: document.getElementById("note").value.trim()
+        });
+
+        if (error) {
+          setMessage("orderMsg", "Gagal mengirim pesanan: " + error.message);
+          submit.disabled = false;
+          return;
+        }
+
+        location.href = routeUrl("pesanan");
+      };
+    }
+
+    async function initializeOrdersPage(supabase, session) {
+      const { data, error } = await supabase.from("orders").select("*")
+        .eq("user_id", session.user.id)
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        document.getElementById("orderRows").innerHTML =
+          '<tr><td colspan="5" class="account-empty">Gagal memuat pesanan.</td></tr>';
+        setMessage("ordersMsg", "Gagal memuat pesanan: " + error.message);
+        return;
+      }
+
+      const orders = data || [];
+      document.getElementById("orderRows").innerHTML = orders.length
+        ? orders.map(order => `
+            <tr>
+              <td>${escapeHtml(new Date(order.created_at).toLocaleString("id-ID"))}</td>
+              <td>${escapeHtml(order.item)}</td>
+              <td>${order.price ? formatRupiah(order.price) : "-"}</td>
+              <td>${escapeHtml(order.bayar)}</td>
+              <td><b>${escapeHtml(order.status)}</b></td>
+            </tr>
+          `).join("")
+        : '<tr><td colspan="5" class="account-empty">Belum ada pesanan.</td></tr>';
+    }
+
+    async function loadAdminOrders(supabase) {
+      setMessage("adminMsg", "");
+      const { data, error } = await supabase.from("orders").select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        document.getElementById("total").textContent = "Pesanan tidak dapat dimuat";
+        document.getElementById("adminRows").innerHTML =
+          '<tr><td colspan="8" class="account-empty">Gagal memuat pesanan.</td></tr>';
+        setMessage("adminMsg", "Gagal memuat pesanan: " + error.message);
+        return;
+      }
+
+      const orders = data || [];
+      document.getElementById("total").textContent = orders.length + " pesanan";
+      document.getElementById("adminRows").innerHTML = orders.length
+        ? orders.map(order => `
+            <tr>
+              <td>${escapeHtml(new Date(order.created_at).toLocaleString("id-ID"))}</td>
+              <td>${escapeHtml(order.email)}</td>
+              <td>${escapeHtml(order.item)}</td>
+              <td>${order.price ? formatRupiah(order.price) : "-"}</td>
+              <td>${escapeHtml(order.nick)}<br>${escapeHtml(order.game_id)}<br>${escapeHtml(order.via)}</td>
+              <td>${escapeHtml(order.bayar)}</td>
+              <td>${escapeHtml(order.note)}</td>
+              <td>
+                <select aria-label="Status pesanan ${escapeHtml(order.id)}" data-id="${escapeHtml(order.id)}">
+                  ${STATUS.map(status => `<option ${status === order.status ? "selected" : ""}>${status}</option>`).join("")}
+                </select>
+              </td>
+            </tr>
+          `).join("")
+        : '<tr><td colspan="8" class="account-empty">Belum ada pesanan.</td></tr>';
+
+      document.querySelectorAll("#adminRows select[data-id]").forEach(select => {
+        select.onchange = async () => {
+          select.disabled = true;
+          const { error: updateError } = await supabase.from("orders")
+            .update({ status: select.value })
+            .eq("id", select.dataset.id);
+          select.disabled = false;
+
+          if (updateError) {
+            await loadAdminOrders(supabase);
+            setMessage("adminMsg", "Gagal memperbarui status: " + updateError.message);
+          } else {
+            setMessage("adminMsg", "Status pesanan berhasil diperbarui.");
+          }
+        };
+      });
+    }
+
+    async function initializeAdminPage(supabase) {
+      await loadAdminOrders(supabase);
+      supabase.channel("orders-live")
+        .on("postgres_changes", { event: "*", schema: "public", table: "orders" }, () => loadAdminOrders(supabase))
+        .subscribe(status => {
+          if (status === "CHANNEL_ERROR" || status === "TIMED_OUT") {
+            setMessage("adminMsg", "Pembaruan langsung tidak tersedia. Muat ulang halaman untuk data terbaru.");
+          }
+        });
+    }
+
+    async function initializeAuthenticatedPage(supabase, session) {
+      if (!session?.user) {
+        const next = routeUrl(page, Object.fromEntries(params.entries()));
+        location.href = routeUrl("login", { next });
+        return;
+      }
+
+      initializeSignOut(supabase);
+      if (page === "order") {
+        initializeOrderPage(supabase, session);
+      } else if (page === "pesanan") {
+        await initializeOrdersPage(supabase, session);
+      } else if (page === "admin") {
+        if (session.user.email?.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+          location.href = routeUrl("pesanan");
+          return;
+        }
+        await initializeAdminPage(supabase);
+      }
+    }
+
+    async function initializeAccountPage() {
+      if (!accountViews[page]) return;
+
+      showAccountView();
+      try {
+        const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2.45.4");
+        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const session = await getSession(supabase);
+
+        if (page === "login") {
+          await initializeLoginPage(supabase, session);
+        } else {
+          await initializeAuthenticatedPage(supabase, session);
+        }
+      } catch (error) {
+        const messageIds = {
+          admin: "adminMsg",
+          order: "orderMsg",
+          pesanan: "ordersMsg",
+          login: "loginMsg"
+        };
+        setMessage(messageIds[page], "Tidak dapat menghubungkan ke layanan akun: " + error.message);
+      }
+    }
+
+    await initializeAccountPage();
+  </script>
+</body>
+
 </html>

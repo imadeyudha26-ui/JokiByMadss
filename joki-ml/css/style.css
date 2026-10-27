@@ -449,6 +449,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   position: fixed;
   inset: 0;
   top: var(--navbar-h);
+  overflow-y: auto;
   background: rgba(8,11,20,0.97);
   backdrop-filter: blur(24px);
   flex-direction: column;
@@ -1497,6 +1498,10 @@ a.footer__contact-item:hover { color: var(--clr-gold); }
    25. RESPONSIVE
    ------------------------------------------------------------ */
 @media (max-width: 1024px) {
+  .navbar__nav, .navbar__cta { display: none; }
+  .navbar__hamburger { display: flex; }
+  .navbar__mobile-menu { display: flex; }
+
   .hero__inner { gap: 2rem; }
   .services__grid  { grid-template-columns: repeat(2,1fr); }
   .benefits__grid  { grid-template-columns: repeat(2,1fr); }

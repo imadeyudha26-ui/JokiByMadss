@@ -319,7 +319,6 @@ function initNavbar() {
     toggleBackToTop();
   }
   window.addEventListener("scroll", onScroll, { passive: true });
-  onScroll();
 
   // Hamburger
   function closeMenu() {
@@ -356,6 +355,7 @@ function initNavbar() {
       link.classList.toggle("active", link.getAttribute("data-nav") === current);
     });
   }
+  onScroll();
 }
 
 /* ============================================================
