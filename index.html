@@ -1223,9 +1223,9 @@
   </div>
 
   <script>
-    const accountRoutes = ["/joki-ml/login.html", "/joki-ml/order.html", "/joki-ml/pesanan.html", "/joki-ml/admin.html"];
-    const isAccountRoute = new URLSearchParams(location.search).has("page") ||
-      accountRoutes.includes(location.pathname.toLowerCase());
+    const accountRoutes = ["login", "order", "pesanan", "admin"];
+    const requestedPage = new URLSearchParams(location.search).get("page");
+    const isAccountRoute = accountRoutes.includes(requestedPage);
     if (!isAccountRoute) {
       document.write([
         "/joki-ml/js/script.js",
@@ -1241,19 +1241,14 @@
     const SUPABASE_ANON_KEY = "sb_publishable_jP7b5v10Amd_0-USiAg92g_azM5nC_K";
     const STATUS = ["Menunggu Pembayaran", "Dibayar", "Sedang Dikerjakan", "Selesai", "Dibatalkan"];
     const params = new URLSearchParams(location.search);
-    const legacyRoutes = {
-      "/joki-ml/login.html": "login",
-      "/joki-ml/order.html": "order",
-      "/joki-ml/pesanan.html": "pesanan",
-      "/joki-ml/admin.html": "admin"
-    };
-    const page = params.get("page") || legacyRoutes[location.pathname.toLowerCase()] || "home";
     const accountViews = {
       login: "loginView",
       order: "orderView",
       pesanan: "ordersView",
       admin: "adminView"
     };
+    const requestedPage = params.get("page");
+    const page = Object.prototype.hasOwnProperty.call(accountViews, requestedPage) ? requestedPage : "home";
 
     function routeUrl(destination, query = {}) {
       const target = new URL("/index.html", location.origin);

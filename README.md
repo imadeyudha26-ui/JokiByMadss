@@ -1,24 +1,26 @@
 # JokiByMadss
 
-Website JokiByMadss is a static HTML, CSS, and JavaScript site. The landing page and account/order pages are served by the root `index.html`.
+JokiByMadss is a static HTML, CSS, and JavaScript website. The root `index.html` contains the landing page, login, order form, customer orders, and admin panel. Account routes use the `?page=` query parameter, for example `/index.html?page=login`.
 
 ## Project structure
 
-- `index.html` — landing page, login, order form, order list, and admin panel. Account views use the `?page=` URL parameter.
+- `index.html` — the single application entry point and all page markup.
 - `joki-ml/css/` — landing-page and account-page styles.
-- `joki-ml/js/` — landing-page interactions.
-- `joki-ml/assets/` — static images.
+- `joki-ml/js/` — landing-page interactions, calculator, hero slider, and WhatsApp integration.
+- `joki-ml/assets/` — static images used by the site.
 
-## Local development
+## Run locally
 
-Run a local static web server from the repository root (using either Python launcher on Windows):
+From the repository root, start a static web server:
 
 ```powershell
 py -m http.server 4173
 ```
 
-If `py` is not available, use `python -m http.server 4173`. Then open `http://localhost:4173`. Supabase is loaded directly by the browser from its CDN; its URL and publishable key are configured in the account script in `index.html`. The publishable key is intended for browser use. Protect order data and admin actions with Supabase Row Level Security policies.
+If the Python launcher is unavailable, use `python -m http.server 4173`. Open `http://localhost:4173/` in a browser. Account routes can be opened directly, for example `http://localhost:4173/index.html?page=login`.
 
-## Build and deployment
+The browser loads Supabase JS from its CDN. The project URL and publishable key are configured in the account script in `index.html`; the publishable key is not a service-role secret. Configure Supabase Row Level Security policies to protect customer orders and admin operations. Frontend email checks are not a security boundary.
 
-Deploy the repository root as a static site. `vercel.json` disables the build step and rewrites the former account-page URLs to the matching view in `index.html`.
+## Deploy
+
+Deploy the repository root as a static site on Vercel with no build command. `vercel.json` serves the root files and rewrites the former `/joki-ml/*.html` URLs to the corresponding view in `index.html`.
