@@ -16,6 +16,8 @@ $("kirim").onclick = async () => {
   $("kirim").disabled = true;
   const { error } = await supabase.from("orders").insert({
     item, price,
+    user_id: user.id,
+    email: user.email,
     nick: $("nick").value.trim(),
     game_id: $("gid").value.trim(),
     via: $("via").value,

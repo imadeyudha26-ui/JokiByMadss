@@ -1,6 +1,6 @@
 export const siteConfig = {
   brandName: 'RANKUP ML',
-  whatsappNumber: '628XXXXXXXXXX',
+  whatsappNumber: '6287828344076',
   instagram: '#',
   tiktok: '#',
 };

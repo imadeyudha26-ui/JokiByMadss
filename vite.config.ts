@@ -4,4 +4,16 @@ import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  build: {
+    rollupOptions: {
+      input: [
+        'index.html',
+        'joki-ml/index.html',
+        'joki-ml/login.html',
+        'joki-ml/order.html',
+        'joki-ml/pesanan.html',
+        'joki-ml/admin.html',
+      ],
+    },
+  },
 })
