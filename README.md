@@ -28,6 +28,9 @@ Before enabling member profiles, QRIS payments, or order administration, inspect
 3. `supabase/migrations/20261028020000_ensure_order_payment_status.sql` (idempotent repair for deployments that applied the payment migration incompletely)
 4. `supabase/migrations/20261028030000_align_order_insert_status.sql` (aligns the deployed insert trigger and RLS policies with the current `Menunggu` + `Belum Dibayar` order state)
 5. `supabase/migrations/20261028040000_finalize_order_insert_status.sql` (final reinstall and assertion of the canonical order insert trigger, in case the initial migration was reapplied later)
+6. `supabase/migrations/20261028050000_reconcile_orders_payment_schema.sql` (final reconciliation: ensures every payment column exists before installing the trigger, RPC, and secure policies)
+
+For a deployment where migrations 1 and the profile/role migration have already run, run migration 6 in SQL Editor instead of replaying older migrations. It adds missing payment columns without replacing the orders table or modifying existing order status, reinstalls the canonical trigger after adding those columns, and refreshes the PostgREST schema cache.
 
 To inspect all active triggers on the deployed orders table after applying migrations, run:
 
