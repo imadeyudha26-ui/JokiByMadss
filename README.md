@@ -21,7 +21,7 @@ If the Python launcher is unavailable, use `python -m http.server 4173`. Open `h
 
 The browser loads Supabase JS from its CDN. The project URL and publishable key are configured in the account script in `index.html`; the publishable key is not a service-role secret. Configure Supabase Row Level Security policies to protect customer orders and admin operations. Frontend email checks are not a security boundary.
 
-Before enabling member profiles, QRIS payments, or order administration, inspect the deployed `public.orders` schema and policies. The first five migrations below document the historical rollout; do not replay them on production just because they are listed here. For an existing installation with the member/profile/admin foundation already present, use the final reconciliation migration (6) by itself. If that foundation is missing, inspect the live database first and apply only the missing prerequisite migrations in order.
+Before enabling member profiles, QRIS payments, or order administration, inspect the deployed `public.orders` schema and policies. The first five migrations below document the historical rollout; do not replay them on production just because they are listed here. For an existing installation with the member/profile/admin foundation already present, apply migration 6 if it has not completed successfully, followed by migration 7. If that foundation is missing, inspect the live database first and apply only the missing prerequisite migrations in order.
 
 1. `supabase/migrations/20261028000000_secure_member_orders.sql`
 2. `supabase/migrations/20261028010000_order_payments_profiles.sql`
@@ -29,8 +29,11 @@ Before enabling member profiles, QRIS payments, or order administration, inspect
 4. `supabase/migrations/20261028030000_align_order_insert_status.sql` (aligns the deployed insert trigger and RLS policies with the current `Menunggu` + `Belum Dibayar` order state)
 5. `supabase/migrations/20261028040000_finalize_order_insert_status.sql` (final reinstall and assertion of the canonical order insert trigger, in case the initial migration was reapplied later)
 6. `supabase/migrations/20261028050000_reconcile_orders_payment_schema.sql` (final reconciliation: adds missing payment fields before installing triggers, RPCs, final-price fields, and secure policies)
+7. `supabase/migrations/20261028060000_rank_pricing.sql` (trusted rank-price catalogue, rank fields, and server-side order pricing)
 
-For a deployment where the secure member/profile/admin foundation has already run, run migration 6 in SQL Editor instead of replaying older migrations. It adds missing payment columns without replacing the orders table or modifying existing order status, reinstalls the canonical trigger after adding those columns, and refreshes the PostgREST schema cache. Existing unrecognized `payment_status` values are preserved verbatim in `legacy_payment_status` before the current status is set to `Perlu Ditinjau` for manual review. It stops with a descriptive error if required base tables/functions are missing, payment column types differ, or an existing `status` check constraint does not permit `Menunggu`.
+Migration 6 reconciles payment columns, triggers, RPCs, Storage, and policies without replacing the orders table. Existing unrecognized `payment_status` values are preserved verbatim in `legacy_payment_status` before the current status is set to `Perlu Ditinjau` for manual review. Migration 7 adds the rank fields and trusted price catalogue without rewriting existing orders. Existing rankless orders and non-rank services keep the admin-priced workflow; new rank orders have their price computed and locked by the database trigger.
+
+The rank catalogue is seeded from the existing `joki-ml/js/calculator.js` tariff. It sums `stars_to_next × price_per_star` for each step from the selected starting rank up to (but not including) the target. Rank order is validated on the server. `Mythical Immortal` is a target only; the calculator does not allow it as a starting rank. To update tariffs, update the catalogue through a reviewed database migration and update the seed values in migration 7; both frontend estimates and server-side order totals read the same catalogue.
 
 Before applying the migration, use these queries in Supabase SQL Editor to capture the actual schema and constraints:
 
@@ -94,7 +97,7 @@ from storage.buckets
 where id = 'jbm-payment-proofs';
 ```
 
-After applying migration 6, rerun the column, trigger, constraint, policy, and bucket queries. Confirm the bucket is private and the payment path columns exist before submitting a test order.
+After applying migrations 6 and 7, rerun the column, trigger, constraint, policy, and bucket queries. Confirm the bucket is private, the payment path and rank columns exist, and `public.jbm_rank_price_steps` contains the catalogue before submitting a test order.
 
 If migration 6 reports that `orders_payment_status_allowed` is violated, inspect the stored legacy values with:
 
@@ -122,11 +125,11 @@ where legacy_payment_status is not null
 order by created_at desc;
 ```
 
-There is no canonical, trusted price catalogue: the homepage and JavaScript currently show different price lists, and the order page accepts `item` and an estimate from URL parameters. Migration 6 adds `final_price` separately; the database ignores any client-supplied final amount. An authenticated admin must set the positive final amount in the order detail panel before the member can upload payment proof. The database records the confirming admin/time and prevents changing that amount after payment proof has been submitted. The browser-provided estimate is informational only and must not be used as the QRIS amount.
+Migration 7 makes `public.jbm_rank_price_steps` the trusted source for rank prices. The order form stores `rank_from`, `rank_to`, and the server-computed `rank_stars`; the database trigger ignores a browser-supplied amount and sets `price` and `final_price` from the catalogue. Rank and calculated price are immutable for new rank orders. The payment page displays the stored `final_price`, not a URL parameter or a browser-calculated estimate. Non-rank and historical orders remain rankless and keep the admin price workflow.
 
 The first migration expects the existing `orders` table and fields used by the app (`user_id`, `email`, `status`, `created_at`, `item`, `price`, `nick`, `game_id`, `via`, `bayar`, and `note`). It creates the profile and role tables and assigns the existing `imadeyudha26@gmail.com` Auth user the admin role. Payment migrations keep payment state separate from work status; migration 6 safely fills missing payment fields and labels only rows whose payment status is null as `Perlu Ditinjau`. Admins must review historical payment records manually. If the admin account does not already exist, create/verify it through the normal Auth process before applying the first migration; the migration does not create an account or change its password.
 
-Add your real static QRIS image at `joki-ml/assets/qris.png` and set the single `QRIS_IMAGE_URL` constant near the top of the account module in `index.html` to `/joki-ml/assets/qris.png`; alternatively, set that constant to the real hosted image URL. No QRIS image is included by this project, and the payment upload stays disabled until a QRIS URL is configured. The payment form accepts JPG/JPEG/PNG proofs up to 5 MB; Supabase Storage keeps them private, and only the owner or database-authorized admin may obtain access.
+The configured QRIS image is `assets/QRIS.jpeg` and is displayed from `/assets/QRIS.jpeg`; replace that file with the real QRIS image if the displayed code is not the payment destination you intend to use. The payment page links the image so it can be opened larger. The payment form accepts JPG/JPEG/PNG proofs up to 5 MB; Supabase Storage keeps them private, and only the owner or database-authorized admin may obtain access.
 
 If login reports `Could not find the function public.jbm_is_admin without parameters in the schema cache`, the database migration has not been applied or PostgREST has not refreshed its schema cache. Review and run the migration above in Supabase **SQL Editor**. If the function is already present, refresh the cache with `NOTIFY pgrst, 'reload schema';`, then retry login. Do not work around this error by checking the admin email in frontend code; admin access must remain database-role based.
 

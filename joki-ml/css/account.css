@@ -239,6 +239,16 @@
   background: var(--surface-white);
 }
 
+.payment-qris a {
+  display: grid;
+  place-items: center;
+  max-width: 100%;
+}
+
+.payment-qris img:not([hidden]) {
+  cursor: zoom-in;
+}
+
 .payment-qris p {
   margin: 0;
   max-width: 360px;
@@ -302,6 +312,40 @@
 
 .account-summary b {
   color: var(--clr-gold);
+}
+
+.rank-price-calculator {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  border: 1px solid var(--clr-border);
+  border-radius: 12px;
+  background: var(--clr-bg);
+}
+
+.rank-price-calculator h2 {
+  margin: 0;
+  color: var(--plum-dark);
+  font-size: 1.1rem;
+}
+
+.rank-price-calculator .account-intro {
+  margin: 0.4rem 0 0.75rem;
+  font-size: 0.9rem;
+}
+
+.rank-price-result {
+  display: grid;
+  gap: 0.45rem;
+  margin-top: 1rem;
+  padding: 0.85rem;
+  border-radius: 9px;
+  background: var(--pink-soft);
+  color: var(--clr-text-2);
+  overflow-wrap: anywhere;
+}
+
+.rank-price-result b {
+  color: var(--plum-dark);
 }
 
 .account-submit {

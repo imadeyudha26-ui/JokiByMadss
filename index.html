@@ -440,7 +440,7 @@
           <p class="section-sub">Pilih paket yang sesuai dengan kebutuhanmu.</p>
         </div>
 
-        <!-- Cards dirender oleh JS dari PRICING_DATA -->
+        <!-- Harga paket mengikuti tarif rank pada katalog kalkulator. -->
         <div class="pkg-grid" id="pricingPackages">
 
   <article class="pkg-card glass" data-reveal data-delay="0">
@@ -474,13 +474,11 @@
   </article>
 
   <article class="pkg-card glass pkg-card--featured" data-reveal data-delay="200">
-    <span class="pkg-card__badge">PALING HEMAT</span>
     <div class="pkg-card__route">
       <span>Epic</span><i class="fas fa-arrow-right" aria-hidden="true"></i><span>Mythic Glory</span>
     </div>
     <h3 class="pkg-card__title">Paket Epic ke Mythic Glory</h3>
-    <div class="pkg-card__price">Rp 700.000</div>
-    <p class="pkg-card__old">Rp 800.000</p>
+    <div class="pkg-card__price">Rp 800.000</div>
     <ul class="pkg-card__features">
       <li><i class="fas fa-check" aria-hidden="true"></i> Satu paket sampai target</li>
       <li><i class="fas fa-check" aria-hidden="true"></i> Update progress real-time</li>
@@ -1219,6 +1217,24 @@
           </select>
           <label class="account-label" for="note">Catatan tambahan <span>(opsional)</span></label>
           <textarea class="account-input account-textarea" id="note" name="note" rows="3" maxlength="500"></textarea>
+          <div class="rank-price-calculator" id="orderRankCalculator" aria-live="polite" hidden>
+            <h2>Kalkulator Harga Rank</h2>
+            <p class="account-intro">Pilih rank awal dan tujuan untuk melihat estimasi berdasarkan tarif website.</p>
+            <label class="account-label" for="orderRankFrom">Rank awal</label>
+            <select class="account-input" id="orderRankFrom" disabled>
+              <option value="">Memuat daftar rank...</option>
+            </select>
+            <label class="account-label" for="orderRankTo">Rank tujuan</label>
+            <select class="account-input" id="orderRankTo" disabled>
+              <option value="">Pilih rank awal terlebih dahulu</option>
+            </select>
+            <div class="rank-price-result">
+              <div>Rank awal: <b id="orderRankFromSummary">Belum dipilih</b></div>
+              <div>Rank tujuan: <b id="orderRankToSummary">Belum dipilih</b></div>
+              <div>Total bintang: <b id="orderRankStars">-</b></div>
+              <div>Estimasi harga: <b id="orderRankPrice">Pilih rank untuk menghitung</b></div>
+            </div>
+          </div>
           <p id="orderMsg" class="account-message" role="status" aria-live="polite"></p>
           <button class="btn btn--gold btn--md account-submit" id="kirim" type="submit" disabled>Lanjut ke Pembayaran</button>
         </form>
@@ -1230,7 +1246,9 @@
         <p class="account-intro">Pindai QRIS dan unggah bukti pembayaran. Pembayaran akan diperiksa admin secara manual.</p>
         <div id="paymentSummary" class="account-summary" aria-live="polite">Memuat detail pesanan...</div>
         <div class="payment-qris">
-          <img id="qrisImage" alt="QRIS pembayaran JokiByMadss" hidden />
+          <a id="qrisLink" target="_blank" rel="noopener noreferrer" aria-label="Perbesar gambar QRIS pembayaran">
+            <img id="qrisImage" alt="QRIS pembayaran JokiByMadss" hidden />
+          </a>
           <p id="qrisUnavailable" class="account-empty">Gambar QRIS belum tersedia. Tambahkan QRIS asli pada lokasi yang dikonfigurasi untuk mengaktifkan pembayaran.</p>
         </div>
         <form id="paymentForm">
@@ -1335,6 +1353,8 @@
     const accountRoutes = ["login", "profil", "order", "pembayaran", "pesanan", "admin"];
     const requestedPage = new URLSearchParams(location.search).get("page");
     const isAccountRoute = accountRoutes.includes(requestedPage);
+    window.JBM_SUPABASE_URL = "https://vywwuidfiudipupquasw.supabase.co";
+    window.JBM_SUPABASE_ANON_KEY = "sb_publishable_jP7b5v10Amd_0-USiAg92g_azM5nC_K";
     if (!isAccountRoute) {
       document.write([
         "/joki-ml/js/script.js",
@@ -1344,10 +1364,11 @@
       ].map(source => `<script type="module" src="${source}"><\/script>`).join(""));
     }
   </script>
+  <script src="/joki-ml/js/rank-pricing.js"></script>
   <script type="module">
-    const SUPABASE_URL = "https://vywwuidfiudipupquasw.supabase.co";
-    const SUPABASE_ANON_KEY = "sb_publishable_jP7b5v10Amd_0-USiAg92g_azM5nC_K";
-    const QRIS_IMAGE_URL = "";
+    const SUPABASE_URL = window.JBM_SUPABASE_URL;
+    const SUPABASE_ANON_KEY = window.JBM_SUPABASE_ANON_KEY;
+    const QRIS_IMAGE_URL = "/assets/QRIS.jpeg";
     const PAYMENT_BUCKET = "jbm-payment-proofs";
     const PAYMENT_MAX_FILE_SIZE = 5 * 1024 * 1024;
     const STATUS = ["Menunggu", "Diproses", "Selesai", "Dibatalkan"];
@@ -1706,56 +1727,28 @@
       }
     }
 
-    function initializeOrderPage(supabase, session) {
+    async function initializeOrderPage(supabase, session) {
       const item = (params.get("item") || "").slice(0, 100);
-      const parsedPrice = Number.parseInt(params.get("price") || "", 10);
-      const price = Number.isFinite(parsedPrice) ? Math.max(0, parsedPrice) : 0;
-      const estimate = price ? formatRupiah(price) : "dikonfirmasi admin";
-
+      const needsRankPrice = !item || item === "Joki Rank" ||
+        item.startsWith("Joki Rank ") || item.startsWith("Paket ");
       document.getElementById("ringkas").innerHTML =
-        `<b>${escapeHtml(item || "Layanan")}</b><br>Estimasi: ${estimate}<br>` +
+        `<b>${escapeHtml(item || "Joki Rank")}</b><br>` +
         `Nama: ${escapeHtml(session.profile.full_name)}<br>Nomor HP: ${escapeHtml(session.profile.phone)}`;
 
       const submit = document.getElementById("kirim");
-      let submitting = false;
-      document.getElementById("orderForm").onsubmit = async event => {
-        event.preventDefault();
-        if (submitting) return;
-        setMessage("orderMsg", "");
-
-        const nickname = document.getElementById("nick").value.trim();
-        const gameId = document.getElementById("gid").value.trim();
-        if (!nickname || !gameId) {
-          setMessage("orderMsg", "Nickname dan ID wajib diisi.");
-          return;
-        }
-
-        submitting = true;
-        submit.disabled = true;
-        try {
-          const { data: order, error } = await supabase.from("orders").insert({
-            item: item || "Layanan",
-            price,
-            nick: nickname,
-            game_id: gameId,
-            via: document.getElementById("via").value,
-            bayar: document.getElementById("bayar").value,
-            note: document.getElementById("note").value.trim(),
-            status: "Menunggu",
-            payment_status: "Belum Dibayar"
-          }).select("id").single();
-          if (error) throw error;
-          orderDirty = false;
-          location.href = routeUrl("pembayaran", { order: order.id });
-        } catch (error) {
-          submitting = false;
-          setMessage("orderMsg", "Gagal mengirim pesanan: " + error.message);
-          submit.disabled = false;
-        }
-      };
-
       const form = document.getElementById("orderForm");
+      const rankFrom = document.getElementById("orderRankFrom");
+      const rankTo = document.getElementById("orderRankTo");
+      const rankFromSummary = document.getElementById("orderRankFromSummary");
+      const rankToSummary = document.getElementById("orderRankToSummary");
+      const rankStarsSummary = document.getElementById("orderRankStars");
+      const rankPriceSummary = document.getElementById("orderRankPrice");
+      document.getElementById("orderRankCalculator").hidden = !needsRankPrice;
+      rankFrom.required = needsRankPrice;
+      rankTo.required = needsRankPrice;
+      let submitting = false;
       let orderDirty = false;
+      let pricing = [];
       form.addEventListener("input", () => { orderDirty = true; });
       form.addEventListener("change", () => { orderDirty = true; });
       window.addEventListener("beforeunload", event => {
@@ -1773,7 +1766,114 @@
             }
           }
         }));
-      submit.disabled = false;
+        if (needsRankPrice) {
+          try {
+            const { data, error } = await supabase.from("jbm_rank_price_steps")
+              .select("rank_label,sort_order,stars_to_next,price_per_star")
+              .order("sort_order", { ascending: true });
+            if (error) throw error;
+            pricing = window.JBMRankPricing.normalize(data);
+          } catch (error) {
+            rankFrom.innerHTML = '<option value="">Tarif rank tidak dapat dimuat</option>';
+            rankTo.innerHTML = '<option value="">Kalkulator belum tersedia</option>';
+            setMessage("orderMsg", "Kalkulator harga belum siap: " + error.message);
+            return;
+          }
+
+          rankFrom.innerHTML = '<option value="">Pilih rank awal</option>' +
+            pricing.slice(0, -1).map(rank =>
+              `<option value="${escapeHtml(rank.label)}">${escapeHtml(rank.label)}</option>`).join("");
+          rankFrom.disabled = false;
+        } else {
+          rankPriceSummary.textContent = "Harga final akan ditetapkan admin";
+          submit.disabled = false;
+          setMessage("orderMsg", "Layanan ini tidak memakai tarif rank; admin akan menetapkan harga sebelum pembayaran.");
+        }
+
+      function updateRankSummary() {
+        const from = rankFrom.value;
+        const to = rankTo.value;
+        rankFromSummary.textContent = from || "Belum dipilih";
+        rankToSummary.textContent = to || "Belum dipilih";
+        rankStarsSummary.textContent = "-";
+        rankPriceSummary.textContent = "Pilih rank awal dan tujuan";
+        submit.disabled = true;
+        if (!from || !to) return;
+
+        try {
+          const result = window.JBMRankPricing.calculate(pricing, from, to);
+          rankStarsSummary.textContent = `${result.rankStars} bintang`;
+          rankPriceSummary.textContent = formatRupiah(result.amount);
+          submit.disabled = false;
+          setMessage("orderMsg", "");
+        } catch (error) {
+          setMessage("orderMsg", error.message);
+        }
+      }
+
+      rankFrom.onchange = () => {
+        const start = pricing.findIndex(rank => rank.label === rankFrom.value);
+        rankTo.innerHTML = start < 0
+          ? '<option value="">Pilih rank awal terlebih dahulu</option>'
+          : '<option value="">Pilih rank tujuan</option>' +
+            pricing.slice(start + 1).map(rank =>
+              `<option value="${escapeHtml(rank.label)}">${escapeHtml(rank.label)}</option>`).join("");
+        rankTo.disabled = start < 0;
+        updateRankSummary();
+      };
+      rankTo.onchange = updateRankSummary;
+
+      form.onsubmit = async event => {
+        event.preventDefault();
+        if (submitting) return;
+        setMessage("orderMsg", "");
+
+        const nickname = document.getElementById("nick").value.trim();
+        const gameId = document.getElementById("gid").value.trim();
+        let estimate;
+        if (needsRankPrice) {
+          try {
+            estimate = window.JBMRankPricing.calculate(pricing, rankFrom.value, rankTo.value);
+          } catch (error) {
+            setMessage("orderMsg", error.message);
+            return;
+          }
+        }
+        if (!nickname || !gameId) {
+          setMessage("orderMsg", "Nickname dan ID wajib diisi.");
+          return;
+        }
+
+        submitting = true;
+        submit.disabled = true;
+        try {
+          const newOrder = {
+            item: item || "Joki Rank",
+            nick: nickname,
+            game_id: gameId,
+            via: document.getElementById("via").value,
+            bayar: document.getElementById("bayar").value,
+            note: document.getElementById("note").value.trim(),
+            status: "Menunggu",
+            payment_status: "Belum Dibayar"
+          };
+          if (needsRankPrice) {
+            newOrder.price = estimate.amount;
+            newOrder.rank_from = rankFrom.value;
+            newOrder.rank_to = rankTo.value;
+          }
+          const { data: order, error } = await supabase.from("orders").insert(newOrder)
+            .select("id,rank_stars,price,final_price").single();
+          if (error) throw error;
+          orderDirty = false;
+          location.href = routeUrl("pembayaran", { order: order.id });
+        } catch (error) {
+          submitting = false;
+          setMessage("orderMsg", "Gagal mengirim pesanan: " + error.message);
+          submit.disabled = false;
+        }
+      };
+
     }
 
     async function initializePaymentPage(supabase, session) {
@@ -1794,14 +1894,18 @@
         <b>${escapeHtml(order.item)}</b><br>
         ID Pesanan: ${escapeHtml(order.id)}<br>
         Detail: ${escapeHtml(order.nick)} · ${escapeHtml(order.game_id)} · ${escapeHtml(order.via)}<br>
+        Rank awal: ${escapeHtml(order.rank_from || "-")} · Rank tujuan: ${escapeHtml(order.rank_to || "-")}<br>
         Total: <b>${order.final_price ? formatRupiah(order.final_price) : "Menunggu penetapan admin"}</b><br>
+        <strong>Harap bayar sesuai nominal di atas.</strong><br>
         Pelanggan: ${escapeHtml(order.full_name || session.profile.full_name)} ·
         ${escapeHtml(order.email || session.user.email)} · ${escapeHtml(order.phone || session.profile.phone)}<br>
         Pembayaran: ${escapeHtml(order.payment_status)}
       `;
 
       const qrisImage = document.getElementById("qrisImage");
+      const qrisLink = document.getElementById("qrisLink");
       const qrisUnavailable = document.getElementById("qrisUnavailable");
+      qrisLink.href = QRIS_IMAGE_URL;
       qrisImage.onload = () => {
         qrisImage.hidden = false;
         qrisUnavailable.hidden = true;
@@ -1829,7 +1933,8 @@
         return;
       }
 
-      if (!order.final_price || Number(order.final_price) <= 0 || !order.price_confirmed_at) {
+      if (!order.final_price || Number(order.final_price) <= 0 ||
+          (!order.rank_from && !order.price_confirmed_at)) {
         fileInput.disabled = uploadButton.disabled = confirmButton.disabled = true;
         setMessage("paymentMsg", "Admin akan menetapkan harga final sebelum pembayaran dapat dilakukan.");
         return;
@@ -1939,7 +2044,8 @@
               <td>${escapeHtml(order.id)}</td>
               <td>${escapeHtml(new Date(order.created_at).toLocaleString("id-ID"))}</td>
               <td>${escapeHtml(order.item)}</td>
-              <td>${escapeHtml(order.nick)}<br>ID: ${escapeHtml(order.game_id)}<br>${escapeHtml(order.via)}</td>
+              <td>${escapeHtml(order.nick)}<br>ID: ${escapeHtml(order.game_id)}<br>${escapeHtml(order.via)}<br>
+                Rank: ${escapeHtml(order.rank_from || "-")} → ${escapeHtml(order.rank_to || "-")}</td>
               <td>${order.final_price ? formatRupiah(order.final_price) : "Menunggu admin"}</td>
               <td><b>${escapeHtml(order.payment_status || "Belum Dibayar")}</b>
                 ${["Belum Dibayar", "Ditolak"].includes(order.payment_status)
@@ -2008,7 +2114,8 @@
               <td>${escapeHtml(order.phone || "-")}</td>
               <td>${escapeHtml(order.item)}</td>
               <td>${order.final_price ? formatRupiah(order.final_price) : "Menunggu admin"}</td>
-              <td>${escapeHtml(order.nick)}<br>ID: ${escapeHtml(order.game_id)}<br>${escapeHtml(order.via)}<br>${escapeHtml(order.bayar)}</td>
+              <td>${escapeHtml(order.nick)}<br>ID: ${escapeHtml(order.game_id)}<br>${escapeHtml(order.via)}<br>
+                ${escapeHtml(order.bayar)}<br>Rank: ${escapeHtml(order.rank_from || "-")} → ${escapeHtml(order.rank_to || "-")}</td>
               <td>
                 <select aria-label="Status pembayaran ${escapeHtml(order.id)}" data-payment-id="${escapeHtml(order.id)}"
                   ${!order.payment_proof_path && order.payment_status !== "Perlu Ditinjau" ? "disabled" : ""}>
@@ -2044,17 +2151,20 @@
               <dt>Member</dt><dd>${escapeHtml(order.full_name || "-")} · ${escapeHtml(order.email)}</dd>
               <dt>Nomor HP</dt><dd>${escapeHtml(order.phone || "-")}</dd>
               <dt>Layanan</dt><dd>${escapeHtml(order.item)}</dd>
+              <dt>Rank awal → tujuan</dt><dd>${escapeHtml(order.rank_from || "-")} → ${escapeHtml(order.rank_to || "-")}</dd>
+              <dt>Total bintang</dt><dd>${order.rank_stars ? `${escapeHtml(order.rank_stars)} bintang` : "-"}</dd>
               <dt>Nickname</dt><dd>${escapeHtml(order.nick)}</dd>
               <dt>ID / Server</dt><dd>${escapeHtml(order.game_id)}</dd>
               <dt>Login melalui</dt><dd>${escapeHtml(order.via)}</dd>
               <dt>Pembayaran</dt><dd>${escapeHtml(order.bayar)}</dd>
               <dt>Catatan</dt><dd>${escapeHtml(order.note || "-")}</dd>
-              <dt>Estimasi dari formulir</dt><dd>${order.price ? formatRupiah(order.price) : "Tidak ditetapkan"}</dd>
+              <dt>Harga terhitung server</dt><dd>${order.price ? formatRupiah(order.price) : "Tidak ditetapkan"}</dd>
               <dt>Harga final</dt><dd>${order.final_price ? formatRupiah(order.final_price) : "Menunggu penetapan admin"}</dd>
-              <dt>Harga ditetapkan</dt><dd>${order.price_confirmed_at
-                ? escapeHtml(new Date(order.price_confirmed_at).toLocaleString("id-ID"))
-                : "-"}</dd>
-              <dt>Admin penetap harga</dt><dd>${escapeHtml(order.price_confirmed_by || "-")}</dd>
+              <dt>Sumber harga</dt><dd>${order.rank_from
+                ? "Kalkulasi server dari tarif rank"
+                : order.price_confirmed_at
+                  ? `Admin · ${escapeHtml(new Date(order.price_confirmed_at).toLocaleString("id-ID"))}`
+                  : "Belum ditetapkan"}</dd>
               <dt>Status pembayaran</dt><dd>${escapeHtml(order.payment_status || "Belum Dibayar")}</dd>
               <dt>Status pembayaran lama (arsip)</dt><dd>${escapeHtml(order.legacy_payment_status || "-")}</dd>
               <dt>Bukti diunggah</dt><dd>${order.payment_submitted_at
@@ -2070,7 +2180,7 @@
                   ? "Pesanan lama; tidak ada bukti tersimpan di sistem."
                   : "Belum ada bukti diunggah."}</dd>
             </dl>
-            ${!order.payment_proof_path && !order.payment_submitted_at
+            ${!order.rank_from && !order.payment_proof_path && !order.payment_submitted_at
               && ["Belum Dibayar", "Ditolak"].includes(order.payment_status)
               && order.status !== "Dibatalkan"
               ? `<form id="adminFinalPriceForm" class="account-price-form">
@@ -2233,7 +2343,7 @@
       if (page === "profil") {
         await initializeProfilePage(supabase, session.user, profile, admin);
       } else if (page === "order") {
-        initializeOrderPage(supabase, session);
+        await initializeOrderPage(supabase, session);
       } else if (page === "pembayaran") {
         await initializePaymentPage(supabase, session);
       } else if (page === "pesanan") {
