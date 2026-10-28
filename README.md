@@ -27,6 +27,24 @@ Before enabling member profiles, QRIS payments, or order administration, inspect
 2. `supabase/migrations/20261028010000_order_payments_profiles.sql`
 3. `supabase/migrations/20261028020000_ensure_order_payment_status.sql` (idempotent repair for deployments that applied the payment migration incompletely)
 4. `supabase/migrations/20261028030000_align_order_insert_status.sql` (aligns the deployed insert trigger and RLS policies with the current `Menunggu` + `Belum Dibayar` order state)
+5. `supabase/migrations/20261028040000_finalize_order_insert_status.sql` (final reinstall and assertion of the canonical order insert trigger, in case the initial migration was reapplied later)
+
+To inspect all active triggers on the deployed orders table after applying migrations, run:
+
+```sql
+select
+  trigger_row.tgname as trigger_name,
+  pg_get_triggerdef(trigger_row.oid) as trigger_definition,
+  function_row.oid::regprocedure as function_name,
+  pg_get_functiondef(function_row.oid) as function_definition
+from pg_trigger trigger_row
+join pg_proc function_row on function_row.oid = trigger_row.tgfoid
+where trigger_row.tgrelid = 'public.orders'::regclass
+  and not trigger_row.tgisinternal
+order by trigger_row.tgname;
+```
+
+Confirm `jbm_set_order_member_details` is a `BEFORE INSERT` trigger calling `public.jbm_set_order_member_details()` and its function validates `NEW.status` as `Menunggu` and `NEW.payment_status` as `Belum Dibayar`. Review any additional `BEFORE INSERT` triggers shown by the query; the application migrations do not remove unrelated triggers.
 
 The first migration expects the existing `orders` table and fields used by the app (`user_id`, `email`, `status`, `created_at`, `item`, `price`, `nick`, `game_id`, `via`, `bayar`, and `note`). It creates the profile and role tables and assigns the existing `imadeyudha26@gmail.com` Auth user the admin role. The second migration adds separate payment status and proof references, a private `jbm-payment-proofs` Storage bucket, owner/admin policies, and adds `orders` to `supabase_realtime` when that publication exists. Both migrations preserve existing order rows; legacy rows are labeled `Perlu Ditinjau` rather than assumed paid or unpaid based on their old mixed `status` field. Admins must review historical payment records manually. If the admin account does not already exist, create/verify it through the normal Auth process before applying the first migration; the migration does not create an account or change its password.
 
