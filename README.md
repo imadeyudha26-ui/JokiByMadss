@@ -26,6 +26,7 @@ Before enabling member profiles, QRIS payments, or order administration, inspect
 1. `supabase/migrations/20261028000000_secure_member_orders.sql`
 2. `supabase/migrations/20261028010000_order_payments_profiles.sql`
 3. `supabase/migrations/20261028020000_ensure_order_payment_status.sql` (idempotent repair for deployments that applied the payment migration incompletely)
+4. `supabase/migrations/20261028030000_align_order_insert_status.sql` (aligns the deployed insert trigger and RLS policies with the current `Menunggu` + `Belum Dibayar` order state)
 
 The first migration expects the existing `orders` table and fields used by the app (`user_id`, `email`, `status`, `created_at`, `item`, `price`, `nick`, `game_id`, `via`, `bayar`, and `note`). It creates the profile and role tables and assigns the existing `imadeyudha26@gmail.com` Auth user the admin role. The second migration adds separate payment status and proof references, a private `jbm-payment-proofs` Storage bucket, owner/admin policies, and adds `orders` to `supabase_realtime` when that publication exists. Both migrations preserve existing order rows; legacy rows are labeled `Perlu Ditinjau` rather than assumed paid or unpaid based on their old mixed `status` field. Admins must review historical payment records manually. If the admin account does not already exist, create/verify it through the normal Auth process before applying the first migration; the migration does not create an account or change its password.
 
