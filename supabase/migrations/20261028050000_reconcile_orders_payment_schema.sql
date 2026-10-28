@@ -9,11 +9,16 @@ alter table public.orders
   add column if not exists payment_proof_path text,
   add column if not exists payment_submitted_at timestamptz,
   add column if not exists payment_reviewed_at timestamptz,
-  add column if not exists payment_reviewed_by uuid;
+  add column if not exists payment_reviewed_by uuid,
+  add column if not exists final_price bigint,
+  add column if not exists price_confirmed_at timestamptz,
+  add column if not exists price_confirmed_by uuid;
 
 do $$
 declare
   missing_columns text;
+  incompatible_types text;
+  incompatible_status_checks text;
 begin
   select string_agg(required.column_name, ', ' order by required.column_name)
     into missing_columns
@@ -36,7 +41,10 @@ begin
       ('payment_proof_path'),
       ('payment_submitted_at'),
       ('payment_reviewed_at'),
-      ('payment_reviewed_by')
+      ('payment_reviewed_by'),
+      ('final_price'),
+      ('price_confirmed_at'),
+      ('price_confirmed_by')
     ) as required(column_name)
    where not exists (
      select 1
@@ -49,6 +57,52 @@ begin
 
   if missing_columns is not null then
     raise exception 'Skema public.orders belum sesuai. Kolom wajib yang tidak ditemukan: %', missing_columns;
+  end if;
+
+  select string_agg(required.column_name || ' (' || format_type(column_row.atttypid, column_row.atttypmod) || ')',
+                    ', ' order by required.column_name)
+    into incompatible_types
+    from (values
+      ('status', 'textual'),
+      ('payment_status', 'textual'),
+      ('payment_proof_path', 'textual'),
+      ('payment_submitted_at', 'timestamp with time zone'),
+      ('payment_reviewed_at', 'timestamp with time zone'),
+      ('payment_reviewed_by', 'uuid'),
+      ('final_price', 'bigint'),
+      ('price_confirmed_at', 'timestamp with time zone'),
+      ('price_confirmed_by', 'uuid')
+    ) as required(column_name, expected_type)
+    join pg_attribute column_row
+      on column_row.attrelid = 'public.orders'::regclass
+     and column_row.attname = required.column_name
+     and column_row.attnum > 0
+     and not column_row.attisdropped
+    join pg_type type_row on type_row.oid = column_row.atttypid
+   where case required.expected_type
+     when 'textual' then type_row.typname not in ('text', 'varchar')
+     when 'timestamp with time zone' then type_row.oid <> 'timestamptz'::regtype
+     when 'uuid' then type_row.oid <> 'uuid'::regtype
+   end;
+
+  if incompatible_types is not null then
+    raise exception 'Tipe kolom public.orders tidak sesuai: %. Periksa skema produksi sebelum mengubah tipe kolom.', incompatible_types;
+  end if;
+
+  select string_agg(constraint_row.conname || ': ' || pg_get_constraintdef(constraint_row.oid),
+                    '; ' order by constraint_row.conname)
+    into incompatible_status_checks
+    from pg_constraint constraint_row
+    join pg_attribute status_column
+      on status_column.attrelid = constraint_row.conrelid
+     and status_column.attname = 'status'
+     and status_column.attnum = any (constraint_row.conkey)
+   where constraint_row.conrelid = 'public.orders'::regclass
+     and constraint_row.contype = 'c'
+     and pg_get_constraintdef(constraint_row.oid) not like '%''Menunggu''%';
+
+  if incompatible_status_checks is not null then
+    raise exception 'Constraint status lama mungkin menolak status Menunggu: %. Tinjau constraint ini sebelum melanjutkan.', incompatible_status_checks;
   end if;
 
   if to_regclass('public.jbm_member_profiles') is null then
@@ -74,8 +128,28 @@ begin
       add constraint jbm_orders_payment_reviewed_by_fkey
       foreign key (payment_reviewed_by) references auth.users (id) not valid;
   end if;
+
+  if not exists (
+    select 1
+      from pg_constraint constraint_row
+      join pg_attribute column_row
+        on column_row.attrelid = constraint_row.conrelid
+       and column_row.attname = 'price_confirmed_by'
+       and column_row.attnum = any (constraint_row.conkey)
+     where constraint_row.conrelid = 'public.orders'::regclass
+       and constraint_row.contype = 'f'
+       and constraint_row.confrelid = 'auth.users'::regclass
+  ) then
+    alter table public.orders
+      add constraint jbm_orders_price_confirmed_by_fkey
+      foreign key (price_confirmed_by) references auth.users (id) not valid;
+  end if;
 end;
 $$;
+
+alter table public.orders
+  drop constraint if exists orders_payment_status_allowed,
+  drop constraint if exists jbm_orders_payment_status_allowed;
 
 update public.orders
    set payment_status = 'Perlu Ditinjau'
@@ -83,25 +157,27 @@ update public.orders
 
 alter table public.orders
   alter column payment_status set default 'Belum Dibayar',
-  alter column payment_status set not null;
+  alter column payment_status set not null,
+  add constraint orders_payment_status_allowed
+    check (payment_status in (
+      'Belum Dibayar',
+      'Menunggu Verifikasi',
+      'Terverifikasi',
+      'Ditolak',
+      'Perlu Ditinjau'
+    ));
 
 do $$
 begin
   if not exists (
     select 1
       from pg_constraint
-     where conname = 'jbm_orders_payment_status_allowed'
+     where conname = 'jbm_orders_final_price_positive'
        and conrelid = 'public.orders'::regclass
   ) then
     alter table public.orders
-      add constraint jbm_orders_payment_status_allowed
-      check (payment_status in (
-        'Belum Dibayar',
-        'Menunggu Verifikasi',
-        'Terverifikasi',
-        'Ditolak',
-        'Perlu Ditinjau'
-      ));
+      add constraint jbm_orders_final_price_positive
+      check (final_price is null or final_price > 0);
   end if;
 end;
 $$;
@@ -145,10 +221,52 @@ begin
   new.payment_submitted_at := null;
   new.payment_reviewed_at := null;
   new.payment_reviewed_by := null;
+  new.final_price := null;
+  new.price_confirmed_at := null;
+  new.price_confirmed_by := null;
 
   return new;
 end;
 $$;
+
+create or replace function public.jbm_guard_order_final_price()
+returns trigger
+language plpgsql
+security invoker
+set search_path = ''
+as $$
+begin
+  if new.final_price is distinct from old.final_price then
+    if not public.jbm_is_admin() then
+      raise exception 'Hanya admin yang berwenang dapat menetapkan harga final.';
+    end if;
+
+    if new.final_price is null or new.final_price <= 0 then
+      raise exception 'Harga final harus lebih besar dari nol.';
+    end if;
+
+    if old.payment_status not in ('Belum Dibayar', 'Ditolak')
+       or old.payment_submitted_at is not null
+       or old.payment_proof_path is not null
+       or old.status = 'Dibatalkan' then
+      raise exception 'Harga final tidak dapat diubah setelah pembayaran diajukan atau pesanan ditutup.';
+    end if;
+
+    new.price_confirmed_at := now();
+    new.price_confirmed_by := auth.uid();
+  else
+    new.price_confirmed_at := old.price_confirmed_at;
+    new.price_confirmed_by := old.price_confirmed_by;
+  end if;
+
+  return new;
+end;
+$$;
+
+drop trigger if exists jbm_guard_order_final_price on public.orders;
+create trigger jbm_guard_order_final_price
+  before update on public.orders
+  for each row execute function public.jbm_guard_order_final_price();
 
 drop trigger if exists jbm_set_order_member_details on public.orders;
 create trigger jbm_set_order_member_details
@@ -162,6 +280,12 @@ security invoker
 set search_path = ''
 as $$
 begin
+  if new.payment_status is distinct from old.payment_status
+     and new.payment_status = 'Terverifikasi'
+     and (new.payment_proof_path is null or new.final_price is null or new.final_price <= 0) then
+    raise exception 'Pembayaran hanya dapat diverifikasi setelah bukti tersedia dan harga final ditetapkan.';
+  end if;
+
   if old.payment_status = 'Terverifikasi'
      and new.payment_status is distinct from old.payment_status
      and old.status in ('Diproses', 'Selesai')
@@ -173,6 +297,12 @@ begin
      and new.status in ('Diproses', 'Selesai')
      and new.payment_status is distinct from 'Terverifikasi' then
     raise exception 'Pembayaran harus diverifikasi sebelum pesanan diproses.';
+  end if;
+
+  if new.status is distinct from old.status
+     and new.status in ('Diproses', 'Selesai')
+     and (new.final_price is null or new.final_price <= 0) then
+    raise exception 'Harga final harus ditetapkan admin sebelum pesanan diproses.';
   end if;
 
   return new;
@@ -264,6 +394,10 @@ begin
     raise exception 'Pesanan yang dibatalkan tidak dapat dibayar.';
   end if;
 
+  if target_order.final_price is null or target_order.final_price <= 0 then
+    raise exception 'Harga pesanan belum ditetapkan admin.';
+  end if;
+
   if target_order.payment_status not in ('Belum Dibayar', 'Ditolak') then
     raise exception 'Bukti pembayaran sudah dikirim atau pembayaran sudah diverifikasi.';
   end if;
@@ -321,6 +455,8 @@ create policy jbm_payment_proofs_insert_owner
        where id::text = (storage.foldername(name))[2]
          and user_id = (select auth.uid())
          and status <> 'Dibatalkan'
+         and final_price is not null
+         and final_price > 0
          and payment_status in ('Belum Dibayar', 'Ditolak')
     )
   );
@@ -364,6 +500,8 @@ create policy jbm_payment_proofs_insert_scope
            where id::text = (storage.foldername(name))[2]
              and user_id = (select auth.uid())
              and status <> 'Dibatalkan'
+             and final_price is not null
+             and final_price > 0
              and payment_status in ('Belum Dibayar', 'Ditolak')
         )
     end

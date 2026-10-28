@@ -1260,7 +1260,7 @@
                 <th scope="col">Tanggal</th>
                 <th scope="col">Layanan</th>
                 <th scope="col">Detail order</th>
-                <th scope="col">Harga</th>
+                <th scope="col">Harga final</th>
                 <th scope="col">Pembayaran</th>
                 <th scope="col">Status Pesanan</th>
               </tr>
@@ -1280,7 +1280,7 @@
       >
         <p class="account-eyebrow">PANEL ADMIN</p>
         <h1 id="adminTitle">Kelola Pesanan</h1>
-        <p class="account-intro">Lihat pesanan terbaru dan perbarui status pengerjaannya.</p>
+        <p class="account-intro">Tetapkan harga final, verifikasi pembayaran, lalu perbarui status pengerjaan.</p>
         <label class="account-label" for="adminStatusFilter">Filter status pesanan</label>
         <select class="account-input account-filter" id="adminStatusFilter">
           <option value="">Semua status</option>
@@ -1303,7 +1303,7 @@
                 <th scope="col">Member</th>
                 <th scope="col">HP / WhatsApp</th>
                 <th scope="col">Layanan</th>
-                <th scope="col">Harga</th>
+                <th scope="col">Harga final</th>
                 <th scope="col">Detail</th>
                 <th scope="col">Status pembayaran</th>
                 <th scope="col">Status pesanan</th>
@@ -1717,8 +1717,10 @@
         `Nama: ${escapeHtml(session.profile.full_name)}<br>Nomor HP: ${escapeHtml(session.profile.phone)}`;
 
       const submit = document.getElementById("kirim");
+      let submitting = false;
       document.getElementById("orderForm").onsubmit = async event => {
         event.preventDefault();
+        if (submitting) return;
         setMessage("orderMsg", "");
 
         const nickname = document.getElementById("nick").value.trim();
@@ -1728,6 +1730,7 @@
           return;
         }
 
+        submitting = true;
         submit.disabled = true;
         try {
           const { data: order, error } = await supabase.from("orders").insert({
@@ -1745,6 +1748,7 @@
           orderDirty = false;
           location.href = routeUrl("pembayaran", { order: order.id });
         } catch (error) {
+          submitting = false;
           setMessage("orderMsg", "Gagal mengirim pesanan: " + error.message);
           submit.disabled = false;
         }
@@ -1790,7 +1794,7 @@
         <b>${escapeHtml(order.item)}</b><br>
         ID Pesanan: ${escapeHtml(order.id)}<br>
         Detail: ${escapeHtml(order.nick)} · ${escapeHtml(order.game_id)} · ${escapeHtml(order.via)}<br>
-        Total: <b>${formatRupiah(order.price)}</b><br>
+        Total: <b>${order.final_price ? formatRupiah(order.final_price) : "Menunggu penetapan admin"}</b><br>
         Pelanggan: ${escapeHtml(order.full_name || session.profile.full_name)} ·
         ${escapeHtml(order.email || session.user.email)} · ${escapeHtml(order.phone || session.profile.phone)}<br>
         Pembayaran: ${escapeHtml(order.payment_status)}
@@ -1822,6 +1826,12 @@
       if (!QRIS_IMAGE_URL) {
         fileInput.disabled = uploadButton.disabled = confirmButton.disabled = true;
         setMessage("paymentMsg", "Pembayaran belum tersedia sampai QRIS asli dikonfigurasi.");
+        return;
+      }
+
+      if (!order.final_price || Number(order.final_price) <= 0 || !order.price_confirmed_at) {
+        fileInput.disabled = uploadButton.disabled = confirmButton.disabled = true;
+        setMessage("paymentMsg", "Admin akan menetapkan harga final sebelum pembayaran dapat dilakukan.");
         return;
       }
 
@@ -1930,7 +1940,7 @@
               <td>${escapeHtml(new Date(order.created_at).toLocaleString("id-ID"))}</td>
               <td>${escapeHtml(order.item)}</td>
               <td>${escapeHtml(order.nick)}<br>ID: ${escapeHtml(order.game_id)}<br>${escapeHtml(order.via)}</td>
-              <td>${order.price ? formatRupiah(order.price) : "-"}</td>
+              <td>${order.final_price ? formatRupiah(order.final_price) : "Menunggu admin"}</td>
               <td><b>${escapeHtml(order.payment_status || "Belum Dibayar")}</b>
                 ${["Belum Dibayar", "Ditolak"].includes(order.payment_status)
                   ? `<br><a href="${routeUrl("pembayaran", { order: order.id })}">Lanjutkan pembayaran</a>` : ""}
@@ -1997,7 +2007,7 @@
               <td>${escapeHtml(order.full_name || order.email)}<br><small>${escapeHtml(order.email)}</small></td>
               <td>${escapeHtml(order.phone || "-")}</td>
               <td>${escapeHtml(order.item)}</td>
-              <td>${order.price ? formatRupiah(order.price) : "-"}</td>
+              <td>${order.final_price ? formatRupiah(order.final_price) : "Menunggu admin"}</td>
               <td>${escapeHtml(order.nick)}<br>ID: ${escapeHtml(order.game_id)}<br>${escapeHtml(order.via)}<br>${escapeHtml(order.bayar)}</td>
               <td>
                 <select aria-label="Status pembayaran ${escapeHtml(order.id)}" data-payment-id="${escapeHtml(order.id)}"
@@ -2039,7 +2049,12 @@
               <dt>Login melalui</dt><dd>${escapeHtml(order.via)}</dd>
               <dt>Pembayaran</dt><dd>${escapeHtml(order.bayar)}</dd>
               <dt>Catatan</dt><dd>${escapeHtml(order.note || "-")}</dd>
-              <dt>Total harga</dt><dd>${formatRupiah(order.price)}</dd>
+              <dt>Estimasi dari formulir</dt><dd>${order.price ? formatRupiah(order.price) : "Tidak ditetapkan"}</dd>
+              <dt>Harga final</dt><dd>${order.final_price ? formatRupiah(order.final_price) : "Menunggu penetapan admin"}</dd>
+              <dt>Harga ditetapkan</dt><dd>${order.price_confirmed_at
+                ? escapeHtml(new Date(order.price_confirmed_at).toLocaleString("id-ID"))
+                : "-"}</dd>
+              <dt>Admin penetap harga</dt><dd>${escapeHtml(order.price_confirmed_by || "-")}</dd>
               <dt>Status pembayaran</dt><dd>${escapeHtml(order.payment_status || "Belum Dibayar")}</dd>
               <dt>Bukti diunggah</dt><dd>${order.payment_submitted_at
                 ? escapeHtml(new Date(order.payment_submitted_at).toLocaleString("id-ID"))
@@ -2053,8 +2068,45 @@
                 : order.payment_status === "Perlu Ditinjau"
                   ? "Pesanan lama; tidak ada bukti tersimpan di sistem."
                   : "Belum ada bukti diunggah."}</dd>
-            </dl>`;
+            </dl>
+            ${!order.payment_proof_path && !order.payment_submitted_at
+              && ["Belum Dibayar", "Ditolak"].includes(order.payment_status)
+              && order.status !== "Dibatalkan"
+              ? `<form id="adminFinalPriceForm" class="account-price-form">
+                  <label class="account-label" for="adminFinalPrice">Harga final (Rupiah)</label>
+                  <input class="account-input" id="adminFinalPrice" type="number" min="1" step="1"
+                    value="${order.final_price ? escapeHtml(order.final_price) : ""}" required />
+                  <p id="adminFinalPriceMsg" class="account-message" role="status" aria-live="polite"></p>
+                  <button class="btn btn--outline btn--md" type="submit">
+                    ${order.final_price ? "Perbarui Harga Final" : "Tetapkan Harga Final"}
+                  </button>
+                </form>`
+              : ""}`;
           document.getElementById("orderDetailDialog").showModal();
+          const priceForm = document.getElementById("adminFinalPriceForm");
+          if (priceForm) {
+            priceForm.onsubmit = async event => {
+              event.preventDefault();
+              const saveButton = priceForm.querySelector("button[type='submit']");
+              const finalPrice = Number(document.getElementById("adminFinalPrice").value);
+              if (!Number.isSafeInteger(finalPrice) || finalPrice <= 0) {
+                setMessage("adminFinalPriceMsg", "Masukkan harga final dalam Rupiah yang lebih besar dari nol.");
+                return;
+              }
+              saveButton.disabled = true;
+              try {
+                const { error: priceError } = await supabase.from("orders")
+                  .update({ final_price: finalPrice })
+                  .eq("id", order.id);
+                if (priceError) throw priceError;
+                setMessage("adminFinalPriceMsg", "Harga final tersimpan. Customer kini dapat melanjutkan pembayaran.");
+                await loadAdminOrders(supabase);
+              } catch (priceError) {
+                setMessage("adminFinalPriceMsg", "Gagal menyimpan harga final: " + priceError.message);
+                saveButton.disabled = false;
+              }
+            };
+          }
           if (order.payment_proof_path) {
             const { data: signedFile, error: signedError } = await supabase.storage
               .from(PAYMENT_BUCKET).createSignedUrl(order.payment_proof_path, 300);
