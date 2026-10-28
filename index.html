@@ -2056,6 +2056,7 @@
                 : "-"}</dd>
               <dt>Admin penetap harga</dt><dd>${escapeHtml(order.price_confirmed_by || "-")}</dd>
               <dt>Status pembayaran</dt><dd>${escapeHtml(order.payment_status || "Belum Dibayar")}</dd>
+              <dt>Status pembayaran lama (arsip)</dt><dd>${escapeHtml(order.legacy_payment_status || "-")}</dd>
               <dt>Bukti diunggah</dt><dd>${order.payment_submitted_at
                 ? escapeHtml(new Date(order.payment_submitted_at).toLocaleString("id-ID"))
                 : "-"}</dd>

@@ -10,6 +10,7 @@ alter table public.orders
   add column if not exists payment_submitted_at timestamptz,
   add column if not exists payment_reviewed_at timestamptz,
   add column if not exists payment_reviewed_by uuid,
+  add column if not exists legacy_payment_status text,
   add column if not exists final_price bigint,
   add column if not exists price_confirmed_at timestamptz,
   add column if not exists price_confirmed_by uuid;
@@ -42,6 +43,7 @@ begin
       ('payment_submitted_at'),
       ('payment_reviewed_at'),
       ('payment_reviewed_by'),
+      ('legacy_payment_status'),
       ('final_price'),
       ('price_confirmed_at'),
       ('price_confirmed_by')
@@ -69,6 +71,7 @@ begin
       ('payment_submitted_at', 'timestamp with time zone'),
       ('payment_reviewed_at', 'timestamp with time zone'),
       ('payment_reviewed_by', 'uuid'),
+      ('legacy_payment_status', 'textual'),
       ('final_price', 'bigint'),
       ('price_confirmed_at', 'timestamp with time zone'),
       ('price_confirmed_by', 'uuid')
@@ -152,8 +155,16 @@ alter table public.orders
   drop constraint if exists jbm_orders_payment_status_allowed;
 
 update public.orders
-   set payment_status = 'Perlu Ditinjau'
- where payment_status is null;
+   set legacy_payment_status = coalesce(legacy_payment_status, payment_status),
+       payment_status = 'Perlu Ditinjau'
+ where payment_status is null
+    or payment_status not in (
+      'Belum Dibayar',
+      'Menunggu Verifikasi',
+      'Terverifikasi',
+      'Ditolak',
+      'Perlu Ditinjau'
+    );
 
 alter table public.orders
   alter column payment_status set default 'Belum Dibayar',
@@ -221,6 +232,7 @@ begin
   new.payment_submitted_at := null;
   new.payment_reviewed_at := null;
   new.payment_reviewed_by := null;
+  new.legacy_payment_status := null;
   new.final_price := null;
   new.price_confirmed_at := null;
   new.price_confirmed_by := null;

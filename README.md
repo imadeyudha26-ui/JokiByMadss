@@ -30,7 +30,7 @@ Before enabling member profiles, QRIS payments, or order administration, inspect
 5. `supabase/migrations/20261028040000_finalize_order_insert_status.sql` (final reinstall and assertion of the canonical order insert trigger, in case the initial migration was reapplied later)
 6. `supabase/migrations/20261028050000_reconcile_orders_payment_schema.sql` (final reconciliation: adds missing payment fields before installing triggers, RPCs, final-price fields, and secure policies)
 
-For a deployment where the secure member/profile/admin foundation has already run, run migration 6 in SQL Editor instead of replaying older migrations. It adds missing payment columns without replacing the orders table or modifying existing order status, reinstalls the canonical trigger after adding those columns, and refreshes the PostgREST schema cache. It stops with a descriptive error if required base tables/functions are missing, payment column types differ, or an existing `status` check constraint does not permit `Menunggu`.
+For a deployment where the secure member/profile/admin foundation has already run, run migration 6 in SQL Editor instead of replaying older migrations. It adds missing payment columns without replacing the orders table or modifying existing order status, reinstalls the canonical trigger after adding those columns, and refreshes the PostgREST schema cache. Existing unrecognized `payment_status` values are preserved verbatim in `legacy_payment_status` before the current status is set to `Perlu Ditinjau` for manual review. It stops with a descriptive error if required base tables/functions are missing, payment column types differ, or an existing `status` check constraint does not permit `Menunggu`.
 
 Before applying the migration, use these queries in Supabase SQL Editor to capture the actual schema and constraints:
 
@@ -95,6 +95,32 @@ where id = 'jbm-payment-proofs';
 ```
 
 After applying migration 6, rerun the column, trigger, constraint, policy, and bucket queries. Confirm the bucket is private and the payment path columns exist before submitting a test order.
+
+If migration 6 reports that `orders_payment_status_allowed` is violated, inspect the stored legacy values with:
+
+```sql
+select payment_status, count(*) as order_count
+from public.orders
+where payment_status is null
+   or payment_status not in (
+     'Belum Dibayar',
+     'Menunggu Verifikasi',
+     'Terverifikasi',
+     'Ditolak',
+     'Perlu Ditinjau'
+   )
+group by payment_status
+order by order_count desc;
+```
+
+The final migration preserves each unsupported historical value in `legacy_payment_status`, moves that order to `Perlu Ditinjau` for manual review, and then creates the current-status constraint. Verify archived values with:
+
+```sql
+select id, legacy_payment_status, payment_status
+from public.orders
+where legacy_payment_status is not null
+order by created_at desc;
+```
 
 There is no canonical, trusted price catalogue: the homepage and JavaScript currently show different price lists, and the order page accepts `item` and an estimate from URL parameters. Migration 6 adds `final_price` separately; the database ignores any client-supplied final amount. An authenticated admin must set the positive final amount in the order detail panel before the member can upload payment proof. The database records the confirming admin/time and prevents changing that amount after payment proof has been submitted. The browser-provided estimate is informational only and must not be used as the QRIS amount.
 
